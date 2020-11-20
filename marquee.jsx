@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, TextInput, Button, ScrollView, FlatList } from 'react-native';
 
 // const buttonStyles = StyleSheet.create({
 // 	container: {
@@ -26,7 +26,8 @@ class Marquee extends React.Component {
 	constructor(props){
 		super(props);
 		this.state = {
-			currentPage: 1
+			currentPage: 1,
+			name: ''
 		}
 		this.nextPage = this.nextPage.bind(this);
 	}
@@ -40,12 +41,25 @@ class Marquee extends React.Component {
 
 	render(){
 		return(
-			<View>
+			<ScrollView>
+				<View>
+				<FlatList
+					data={[
+						{key:'Wake up'},
+						{key:'Make coffee'},
+						{key:'Do sign'},
+						{key:'Turn on pc'},
+					]}
+					renderItem={({item}) => <Text>{item.key}</Text>}
+				/>
 				<Text>The currentPage is {this.state.currentPage}</Text>
 				<View>
-					<Text style={buttonStyles} onPress={this.nextPage}>Next</Text>
+					<Button style={buttonStyles} onPress={this.nextPage} title="Next"/>
 				</View>
-			</View>
+				<Text>Your name: {this.state.name}</Text>
+				<TextInput style={{height: 40}} onChangeText={(text) => this.setState({name: text})} />
+				</View>
+			</ScrollView>
 		);
 	}
 }
