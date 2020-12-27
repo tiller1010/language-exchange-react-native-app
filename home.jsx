@@ -108,10 +108,9 @@ class Home extends React.Component {
 		});
 	}
 
-	componentDidMount(){
+	async componentDidMount(){
 
-		// axios.get('http://http://192.168.1.5:1337/levels')
-		fetch('http://http://192.168.1.5:1337/levels')
+		axios.get('http://192.168.1.5:1337/levels')
 			.then(res => {
 				this.setState({
 					levels: res.data
@@ -125,7 +124,9 @@ class Home extends React.Component {
 				case 'image/jpeg':
 					return (
 						<View className="img-container">
-							<Image source={{uri: `http://http://192.168.1.5:1337${topic.FeaturedImage.url}`}}/>
+							<Image source={{uri: `http://192.168.1.5:1337${topic.FeaturedImage.url}`}}
+								style={{height: 400, width: 400}}
+							/>
 						</View>
 					);
 				default:
@@ -136,7 +137,7 @@ class Home extends React.Component {
 
 	render(){
 		return(
-			<View>
+			<ScrollView>
 				<Text>Video Submissions</Text>
 				<View action="/videos" method="GET">
 					<Text htmlFor="keywords">Search Terms</Text>
@@ -149,15 +150,15 @@ class Home extends React.Component {
 
 			    {this.state.levels ?
 			    	this.state.levels.map((level) => 
-			    		<View key={this.state.levels.indexOf(level)} className="flex x-center">
-				    		<Button title="View all videos" onPress={() =>
+			    		<View key={level.id} className="flex x-center">
+				    		<Button title={`Level: ${level.Level}`} onPress={() =>
 									this.props.navigation.navigate('Level', {levelID: level.id})
 								}
 							/>
 				    		{level.topics ?
 				    			<View className="topics pure-u-1 flex x-space-around">
 					    			{level.topics.map((topic) =>
-				    					<View title="button" key={level.topics.indexOf(topic)} href={`/level/${level.id}/topics/${topic.id}`} className="topic pure-u-1-2">
+				    					<View title="button" key={topic.id} href={`/level/${level.id}/topics/${topic.id}`} className="topic pure-u-1-2">
 						    					<Text className="text-center">{topic.Topic}</Text>
 						    					{this.renderMedia(topic)}
 				    					</View>
@@ -171,7 +172,7 @@ class Home extends React.Component {
 			    	:
 			    	<Text>No levels</Text>
 			    }
-			</View>
+			</ScrollView>
 		);
 	}
 }

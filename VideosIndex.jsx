@@ -1,18 +1,32 @@
 import React from 'react';
 // import lozad from 'lozad';
 import { StyleSheet, Text, View, TextInput, Button, Image, ScrollView, FlatList } from 'react-native';
+// import Video from 'react-native-video';
+ import { Video } from 'expo-av';
 
 async function getVideos(){
-	var urlParams = new URLSearchParams(window.location.search);
-	var searchKeywords = urlParams.get('keywords') || '';
-	var page = urlParams.get('page') || '';
-	return fetch(`${document.location.origin}/videos.json?${searchKeywords ? 'keywords=' + searchKeywords + '&' : ''}${page ? 'page=' + page : ''}`)
-		.then((response) => response.json());
+	// var urlParams = new URLSearchParams(window.location.search);
+	// var searchKeywords = urlParams.get('keywords') || '';
+	// var page = urlParams.get('page') || '';
+
+	var searchKeywords = '';
+	var page = '1';
+
+	// Change this to use an env setting
+	var apiBaseURL = 'http://192.168.1.5:3000';
+	return fetch(`${apiBaseURL}/videos.json?${searchKeywords ? 'keywords=' + searchKeywords + '&' : ''}${page ? 'page=' + page : ''}`)
+		.then((response) => response.json())
+		.catch((e) => console.log(e));
 }
 
 // Enable lazy loading
 // const lozadObserver = lozad();
 // lozadObserver.observe();
+
+const flex = {
+	flex: 1,
+	flexDirection: 'row'
+}
 
 class VideosIndex extends React.Component {
 	constructor(){
@@ -31,20 +45,7 @@ class VideosIndex extends React.Component {
 	async componentDidMount(){
 		// var urlParams = new URLSearchParams(window.location.search);
 		// var page = urlParams.get('page') || 1;
-
-		// var newVideos = await getVideos();
-		// if(newVideos){
-		// 	this.setState({
-		// 		videos: newVideos.videos,
-		// 		pages: this.pagination(newVideos.pages),
-		// 		currentPage: page
-		// 	});
-		// }
-	}
-
-	async refreshVideos(){
-		var urlParams = new URLSearchParams(window.location.search);
-		var page = urlParams.get('page') || 1;
+		var page = 1;
 
 		var newVideos = await getVideos();
 		if(newVideos){
@@ -54,6 +55,21 @@ class VideosIndex extends React.Component {
 				currentPage: page
 			});
 		}
+		// console.log('http://192.168.1.5:3000' + '/' + this.state.videos[0].src)
+	}
+
+	async refreshVideos(){
+		// var urlParams = new URLSearchParams(window.location.search);
+		// var page = urlParams.get('page') || 1;
+
+		// var newVideos = await getVideos();
+		// if(newVideos){
+		// 	this.setState({
+		// 		videos: newVideos.videos,
+		// 		pages: this.pagination(newVideos.pages),
+		// 		currentPage: page
+		// 	});
+		// }
 	}
 
 	handleChangePage(event){
@@ -82,11 +98,14 @@ class VideosIndex extends React.Component {
 		// var urlParams = new URLSearchParams(window.location.search);
 		// var keywords = urlParams.get('keywords') || null;
 
+		var apiBaseURL = 'http://192.168.1.5:3000';
+		var keywords = '';
+
 		return (
-			<View className="pad">			
+			<ScrollView>			
 				<Text>Videos</Text>
 				<View>
-					<Button title="Button Placeholder" href={`/`}/>
+					<Button title="Back" href={`/`}/>
 				</View>
 				<Button title="Refresh" onClick={this.refreshVideos}/>
 				<View action="/videos" method="GET" onSubmit={this.handleSearch}>
@@ -102,17 +121,17 @@ class VideosIndex extends React.Component {
 			    </View>
 				<View>
 					{this.state.pages.length ?
-						<View className="pagination flex">
+						<View style={flex}>
 							{this.state.currentPage > 1 ?
 								<View>
 									<Button title="Prev" onClick={this.handleChangePage} href={`/videos?${keywords ? 'keywords=' + keywords + '&' : ''}page=${Number(this.state.currentPage) - 1}`}/>
 								</View>
 								:
-								''
+								<Text></Text>
 							}
 							{this.state.pages.map((page) =>
 								<View key={this.state.pages.indexOf(page)}>
-									<Button title={page.pageNumber} onClick={this.handleChangePage} href={`/videos?${keywords ? 'keywords=' + keywords + '&' : ''}page=${page.pageNumber}`}/>
+									<Button title={`${page.pageNumber}`} onClick={this.handleChangePage} href={`/videos?${keywords ? 'keywords=' + keywords + '&' : ''}page=${page.pageNumber}`}/>
 								</View>
 							)}
 							{this.state.currentPage < this.state.pages.length ?
@@ -120,24 +139,32 @@ class VideosIndex extends React.Component {
 									<Button title="Next" onClick={this.handleChangePage} href={`/videos?${keywords ? 'keywords=' + keywords + '&' : ''}page=${Number(this.state.currentPage) + 1}`}/>
 								</View>
 								:
-								''
+								<Text></Text>
 							}
 						</View>
 						:
 						<Text></Text>
 					}
+				{/*source={{uri: apiBaseURL + '/' + video.src}}*/}
 					{this.state.videos.length ?
 						<View>
 							{this.state.videos.map((video) => 
 								<View key={video._id}>
 									<Text>{video.title}</Text>
-									<View style={{height: '300px'}}>
-										<video type="video/mp4" className="video-preview lozad" height="225" width="400" poster={
-											video.thumbnailSrc || "/images/videoPlaceholder.png"
-										} controls>
-											<source src={video.src}></source>
-										</video>
-									</View>
+									{video.src ?
+										<View>
+											<Video
+												source={{uri: apiBaseURL + '/' + video.src}}
+												ref={(ref) => {
+													this.player = ref
+												}}
+												style={{height: 225, width: 400}}
+												controls={'true'}
+											/>
+										</View>
+										:
+										<Text>No Video Source</Text>
+									}
 								</View>
 							)}
 						</View>
@@ -145,17 +172,17 @@ class VideosIndex extends React.Component {
 						<Text>No videos</Text>
 					}
 					{this.state.pages.length ?
-						<View className="pagination flex">
+						<View style={flex}>
 							{this.state.currentPage > 1 ?
 								<View>
 									<Button title="Prev" onClick={this.handleChangePage} href={`/videos?${keywords ? 'keywords=' + keywords + '&' : ''}page=${Number(this.state.currentPage) - 1}`}/>
 								</View>
 								:
-								''
+								<Text></Text>
 							}
 							{this.state.pages.map((page) =>
 								<View key={this.state.pages.indexOf(page)}>
-									<Button title={page.pageNumber} onClick={this.handleChangePage} href={`/videos?${keywords ? 'keywords=' + keywords + '&' : ''}page=${page.pageNumber}`}/>
+									<Button title={`${page.pageNumber}`} onClick={this.handleChangePage} href={`/videos?${keywords ? 'keywords=' + keywords + '&' : ''}page=${page.pageNumber}`}/>
 								</View>
 							)}
 							{this.state.currentPage < this.state.pages.length ?
@@ -163,14 +190,14 @@ class VideosIndex extends React.Component {
 									<Button title="Next" onClick={this.handleChangePage} href={`/videos?${keywords ? 'keywords=' + keywords + '&' : ''}page=${Number(this.state.currentPage) + 1}`}/>
 								</View>
 								:
-								''
+								<Text></Text>
 							}
 						</View>
 						:
 						<Text></Text>
 					}
 				</View>
-			</View>
+			</ScrollView>
 		);
 	}
 }
