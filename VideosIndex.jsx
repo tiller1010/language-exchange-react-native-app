@@ -1,8 +1,8 @@
 import React from 'react';
 // import lozad from 'lozad';
 import { StyleSheet, Text, View, TextInput, Button, Image, ScrollView, FlatList } from 'react-native';
- import { Video } from 'expo-av';
- import { parse as URLParse } from 'search-params';
+import { Video } from 'expo-av';
+import { parse as URLParse } from 'search-params';
 
 async function getVideos(url='http://192.168.1.5:3000/videos.json'){
 	// var urlParams = new URLSearchParams(window.location.search);
@@ -156,20 +156,15 @@ class VideosIndex extends React.Component {
 						:
 						<Text></Text>
 					}
-				{/*source={{uri: apiBaseURL + '/' + video.src}}*/}
 					{this.state.videos.length ?
 						<View>
 							{this.state.videos.map((video) => 
 								<View key={video._id}>
 									<Text>{video.title}</Text>
-									<Text>{apiBaseURL + '/' + video.src}</Text>
 									{video.src ?
 										<View>
 											<Video
 												source={{uri: apiBaseURL + '/' + video.src}}
-												// source={require(`${apiBaseURL}/${video.src}`)}
-												// source={{uri: 'http://192.168.1.5:3000/assets/7aa323d98c1c189273d6b1f30871586d'}}
-												// source={{uri: 'http://192.168.1.5:1337/uploads/blue_537511538c.mp4'}}
 												posterSource={{uri: video.thumbnailSrc ? apiBaseURL + '/' + video.thumbnailSrc : apiBaseURL + '/images/videoPlaceholder.png'}}
 												ref={(ref) => {
 													this.player = ref
