@@ -1,7 +1,8 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import Home from './home.jsx';
+import Home from './Home.jsx';
 import VideosIndex from './VideosIndex.jsx';
+import VideosAdd from './VideosAdd.jsx';
 import Profile from './profile.jsx'
 import { StyleSheet, Text, View } from 'react-native';
 import 'react-native-gesture-handler';
@@ -44,6 +45,10 @@ export default function App() {
         <Stack.Screen
           name="VideosIndex"
           component={VideosIndex}
+        />
+        <Stack.Screen
+          name="VideosAdd"
+          component={VideosAdd}
         />
       </Stack.Navigator>
     </NavigationContainer>

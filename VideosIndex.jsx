@@ -122,13 +122,15 @@ class VideosIndex extends React.Component {
 				<View action="/videos" method="GET" onSubmit={this.handleSearch}>
 					<Text htmlFor="keywords">Search Terms</Text>
 					<TextInput type="text" name="keywords"/>
-					<TextInput type="submit" value="Search"/>
+					<Button title="Search"/>
 				</View>
 			    <View>
 				    <Button title="Clear filters" onClick={this.handleChangePage} href="/videos"/>
 			    </View>
 			    <View>
-				    <Button title="Add a video" href="/videos/add"/>
+				    <Button title="Add a video" onPress={() => 
+				    	this.props.navigation.navigate('VideosAdd')
+				    }/>
 			    </View>
 				<View>
 					{this.state.pages.length ?

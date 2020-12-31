@@ -146,7 +146,7 @@ class Home extends React.Component {
 				</View>
 			    <Button title="View all videos" onPress={() =>
 					this.props.navigation.navigate('VideosIndex')
-				} href="/videos"/>
+				}/>
 
 			    {this.state.levels ?
 			    	this.state.levels.map((level) => 
