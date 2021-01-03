@@ -89,11 +89,21 @@ class VideosIndex extends React.Component {
 		}
 	}
 
-	handleSearch(event){
-		event.preventDefault();
-		var url = event.target.action + '?' + (new URLSearchParams(new FormData(event.target)).toString());
-		window.history.pushState({}, '', url);
-		this.refreshVideos();
+	async handleSearch(url){
+		// event.preventDefault();
+		// var url = event.target.action + '?' + (new URLSearchParams(new FormData(event.target)).toString());
+		// window.history.pushState({}, '', url);
+		// this.refreshVideos();
+		var page = 1;
+
+		var newVideos = await getVideos(url);
+		if(newVideos){
+			this.setState({
+				videos: newVideos.videos,
+				pages: this.pagination(newVideos.pages),
+				currentPage: page
+			});
+		}
 	}
 
 	pagination(pages){
@@ -115,14 +125,11 @@ class VideosIndex extends React.Component {
 		return (
 			<ScrollView>			
 				<Text>Videos</Text>
-				<View>
-					<Button title="Back" href={`/`}/>
-				</View>
 				<Button title="Refresh" onClick={this.refreshVideos}/>
 				<View action="/videos" method="GET" onSubmit={this.handleSearch}>
-					<Text htmlFor="keywords">Search Terms</Text>
-					<TextInput type="text" name="keywords"/>
-					<Button title="Search"/>
+					<Text>Search Terms</Text>
+					<TextInput type="text" onChangeText={(text) => this.setState({keywords: text})} value={this.state.keywords}/>
+					<Button title="Search" onPress={() => this.handleSearch(`http://192.168.1.5:3000/videos.json?keywords=${this.state.keywords}`)}/>
 				</View>
 			    <View>
 				    <Button title="Clear filters" onClick={this.handleChangePage} href="/videos"/>

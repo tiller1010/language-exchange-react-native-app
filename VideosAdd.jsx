@@ -76,7 +76,6 @@ class VideosAdd extends React.Component {
 		return (
 			<View className="pad">
 				<Text>Video Add</Text>
-				<Button title="Back" href={`/`}/>
 				<View className="flex">
 					<View className="pure-u-1-2">
 						<Text>Video Preview</Text>
