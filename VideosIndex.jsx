@@ -28,6 +28,9 @@ const flex = {
 	flex: 1,
 	flexDirection: 'row'
 }
+const pad = {
+	padding: 20
+}
 
 class VideosIndex extends React.Component {
 	constructor(){
@@ -128,11 +131,18 @@ class VideosIndex extends React.Component {
 				<Button title="Refresh" onClick={this.refreshVideos}/>
 				<View action="/videos" method="GET" onSubmit={this.handleSearch}>
 					<Text>Search Terms</Text>
-					<TextInput type="text" onChangeText={(text) => this.setState({keywords: text})} value={this.state.keywords}/>
+					<TextInput type="text" onChangeText={(text) => this.setState({keywords: text})} value={this.state.keywords}
+						style={{
+							borderWidth: 1,
+							borderColor: 'black'
+						}}
+					/>
 					<Button title="Search" onPress={() => this.handleSearch(`http://192.168.1.5:3000/videos.json?keywords=${this.state.keywords}`)}/>
 				</View>
 			    <View>
-				    <Button title="Clear filters" onClick={this.handleChangePage} href="/videos"/>
+				    <Button title="Clear filters" onPress={
+						() => this.handleChangePage(`${apiBaseURL}/videos.json`)
+				    }/>
 			    </View>
 			    <View>
 				    <Button title="Add a video" onPress={() => 
@@ -178,7 +188,7 @@ class VideosIndex extends React.Component {
 												ref={(ref) => {
 													this.player = ref
 												}}
-												style={{height: 225, width: 400}}
+												style={{height: 225, width: '100%'}}
 												// usePoster={true}
 												useNativeControls={true}
 												// overrideFileExtensionAndroid="mp4"

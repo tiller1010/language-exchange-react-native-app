@@ -1,7 +1,8 @@
 import React from 'react';
-import { StyleSheet, Text, View, TextInput, Button, Image, ScrollView, FlatList } from 'react-native';
+import { ImageBackground, StyleSheet, Text, View, TextInput, Button, Image, ScrollView, FlatList } from 'react-native';
 import { Video } from 'expo-av';
-import { launchImageLibrary } from 'react-native-image-picker';
+// import { launchImageLibrary } from 'react-native-image-picker';
+import * as ImagePicker from 'expo-image-picker';
 
 class VideosAdd extends React.Component {
 	constructor(){
@@ -15,17 +16,16 @@ class VideosAdd extends React.Component {
 	componentDidMount(){
 	}
 
-	handleThumbnailUploadChange(event){
-		let imageOptions = {
+	async handleThumbnailUploadChange(event){
+		const imageOptions = {
 			noData: true
 		}
-		launchImageLibrary(imageOptions, response => {
-			if(response.uri){
-				this.setState({
-					thumbnail: response
-				});
-			}
-		});
+		let response = await ImagePicker.launchImageLibraryAsync(imageOptions);
+		if(response.uri){
+			this.setState({
+				thumbnail: response
+			});
+		}
 		
 		// let key = event.target.name;
 		// let newState = {};
@@ -49,7 +49,16 @@ class VideosAdd extends React.Component {
 	 //    }
 	}
 
-	handleVideoUploadChange(event){
+	async handleVideoUploadChange(event){
+		const videoOptions = {
+			mediaTypes: ImagePicker.MediaTypeOptions.Videos
+		}
+		let response = await ImagePicker.launchImageLibraryAsync(videoOptions);
+		if(response.uri){
+			this.setState({
+				video: response
+			});
+		}
 		// let key = event.target.name;
 		// let newState = {};
 	 //    let video = event.target.files[0];
@@ -80,27 +89,26 @@ class VideosAdd extends React.Component {
 					<View className="pure-u-1-2">
 						<Text>Video Preview</Text>
 						<Video
+							source={this.state.video}
 							ref={(ref) => {
 								this.player = ref
 							}}
-							style={{height: 225, width: 400}}
+							style={{height: 225, width: '100%'}}
 							// usePoster={true}
 							useNativeControls={true}
 						/>
 					</View>
 					<View className="pure-u-1-2">
 						<Text>Thumbnail Preview</Text>
-						<View className="thumbnail-preview" style={{height: 225, width: 400}}></View>
+						<ImageBackground className="thumbnail-preview" source={this.state.thumbnail} style={{height: 225, width: '100%'}}></ImageBackground>
 					</View>
 				</View>
 				<View action="/videos/add" method="POST" encType="multipart/form-data">
 					<TextInput type="text" name="title" required/>
 					<View style={{display: 'flex'}}>
-						<Text htmlFor="video">Video</Text>
 						<Button title="Upload Video" name="video" onPress={this.handleVideoUploadChange} required/>
 					</View>
 					<View style={{display: 'flex'}}>
-						<Text htmlFor="thumbnail">Thumbnail</Text>
 						<Button title="Upload Thumbnail" name="thumbnail" onPress={this.handleThumbnailUploadChange} required/>
 					</View>
 					<Button title="Submit"/>
