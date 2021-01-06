@@ -1,8 +1,9 @@
 import React from 'react';
 // import lozad from 'lozad';
-import { StyleSheet, Text, View, TextInput, Button, Image, ScrollView, FlatList } from 'react-native';
+import { Text, View, TextInput, Button, Image, ScrollView } from 'react-native';
 import { Video } from 'expo-av';
 import { parse as URLParse } from 'search-params';
+import Styles from './Styles.js';
 
 async function getVideos(url='http://192.168.1.5:3000/videos.json'){
 	// var urlParams = new URLSearchParams(window.location.search);
@@ -24,21 +25,14 @@ async function getVideos(url='http://192.168.1.5:3000/videos.json'){
 // const lozadObserver = lozad();
 // lozadObserver.observe();
 
-const flex = {
-	flex: 1,
-	flexDirection: 'row'
-}
-const pad = {
-	padding: 20
-}
-
 class VideosIndex extends React.Component {
-	constructor(){
-		super();
+	constructor(props){
+		super(props);
 		this.state = {
 			videos: [],
 			pages: [],
-			currentPage: 1
+			currentPage: 1,
+			keywords: ''
 		}
 		this.refreshVideos = this.refreshVideos.bind(this);
 		this.pagination = this.pagination.bind(this);
@@ -47,10 +41,16 @@ class VideosIndex extends React.Component {
 	}
 
 	async componentDidMount(){
-		// var urlParams = new URLSearchParams(window.location.search);
-		// var page = urlParams.get('page') || 1;
+		if(this.props.route.params){
+			if(this.props.route.params.keywords){
+				this.setState({
+					keywords: this.props.route.params.keywords
+				});
+				this.handleSearch(`http://192.168.1.5:3000/videos.json?keywords=${this.props.route.params.keywords}`);
+				return;
+			}
+		}
 		var page = 1;
-
 		var newVideos = await getVideos();
 		if(newVideos){
 			this.setState({
@@ -59,7 +59,6 @@ class VideosIndex extends React.Component {
 				currentPage: page
 			});
 		}
-		// console.log('http://192.168.1.5:3000' + '/' + this.state.videos[0].src)
 	}
 
 	async refreshVideos(){
@@ -77,9 +76,6 @@ class VideosIndex extends React.Component {
 	}
 
 	async handleChangePage(url){
-		// window.history.pushState({}, '', event.target.href);
-		// this.refreshVideos();
-
 		var page = URLParse(url).page ||  1;
 
 		var newVideos = await getVideos(url);
@@ -93,10 +89,6 @@ class VideosIndex extends React.Component {
 	}
 
 	async handleSearch(url){
-		// event.preventDefault();
-		// var url = event.target.action + '?' + (new URLSearchParams(new FormData(event.target)).toString());
-		// window.history.pushState({}, '', url);
-		// this.refreshVideos();
 		var page = 1;
 
 		var newVideos = await getVideos(url);
@@ -119,17 +111,14 @@ class VideosIndex extends React.Component {
 
 	render(){
 
-		// var urlParams = new URLSearchParams(window.location.search);
-		// var keywords = urlParams.get('keywords') || null;
-
 		var apiBaseURL = 'http://192.168.1.5:3000';
-		var keywords = '';
+		var keywords = this.state.keywords;
 
 		return (
 			<ScrollView>			
 				<Text>Videos</Text>
 				<Button title="Refresh" onClick={this.refreshVideos}/>
-				<View action="/videos" method="GET" onSubmit={this.handleSearch}>
+				<View>
 					<Text>Search Terms</Text>
 					<TextInput type="text" onChangeText={(text) => this.setState({keywords: text})} value={this.state.keywords}
 						style={{
@@ -141,7 +130,10 @@ class VideosIndex extends React.Component {
 				</View>
 			    <View>
 				    <Button title="Clear filters" onPress={
-						() => this.handleChangePage(`${apiBaseURL}/videos.json`)
+						() => {
+							this.setState({keywords: ''});
+							this.handleChangePage(`${apiBaseURL}/videos.json`);
+						}
 				    }/>
 			    </View>
 			    <View>
@@ -151,7 +143,7 @@ class VideosIndex extends React.Component {
 			    </View>
 				<View>
 					{this.state.pages.length ?
-						<View style={flex}>
+						<View style={Styles.flex}>
 							{this.state.currentPage > 1 ?
 								<View>
 									<Button title="Prev" onPress={() => this.handleChangePage(`${apiBaseURL}/videos.json?${keywords ? 'keywords=' + keywords + '&' : ''}page=${Number(this.state.currentPage) - 1}`)}/>
@@ -204,7 +196,7 @@ class VideosIndex extends React.Component {
 						<Text>No videos</Text>
 					}
 					{this.state.pages.length ?
-						<View style={flex}>
+						<View style={Styles.flex}>
 							{this.state.currentPage > 1 ?
 								<View>
 									<Button title="Prev" onPress={() => this.handleChangePage(`${apiBaseURL}/videos.json?${keywords ? 'keywords=' + keywords + '&' : ''}page=${Number(this.state.currentPage) - 1}`)}/>

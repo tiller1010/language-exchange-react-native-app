@@ -1,102 +1,15 @@
 import React from 'react';
 import axios from 'axios';
-import { StyleSheet, Text, View, TextInput, Button, Image, ScrollView, FlatList } from 'react-native';
-
-// const buttonStyles = StyleSheet.create({
-// 	container: {
-// 	    flex: 1,
-// 		justifyContent: 'center',
-// 		alignItems: 'center',
-// 		padding: '20 30px',
-// 		backgroundColor: '#555',
-// 		color: '#fff'
-// 	}
-// });
-
-			// <ScrollView>
-			// 	<View>
-			// 	<FlatList
-			// 		data={[
-			// 			{key:'Wake up'},
-			// 			{key:'Make coffee'},
-			// 			{key:'Do sign'},
-			// 			{key:'Turn on pc'},
-			// 		]}
-			// 		renderItem={({item}) => <Text>{item.key}</Text>}
-			// 	/>
-			// 	<Text>The currentPage is {this.state.currentPage}</Text>
-			// 	<View>
-			// 		<Button style={buttonStyles} onPress={this.nextPage} title="Next"/>
-			// 	</View>
-			// 	<Text>Your name: {this.state.name}</Text>
-			// 	<TextInput style={{height: 40}} onChangeText={(text) => this.setState({name: text})} />
-			// 	</View>
-			// </ScrollView>
-
-
-			// <div className="pad">
-			// 	<h1>Video Submissions</h1>
-			// 	<form action="/videos" method="GET">
-			// 		<label htmlFor="keywords">Search Terms</label>
-			// 		<input type="text" name="keywords"/>
-			// 		<input type="submit" value="Search"/>
-			// 	</form>
-			//     <a href="/videos">View all videos</a>
-
-			//     <hr/>
-
-			//     {this.state.levels ?
-			//     	this.state.levels.map((level) => 
-			//     		<div key={this.state.levels.indexOf(level)} className="flex x-center">
-			// 	    		<a href={`/level/${level.id}`} className="pure-u-1 text-center"><h2>Level {level.Level}</h2></a>
-			// 	    		{level.topics ?
-			// 	    			<div className="topics pure-u-1 flex x-space-around">
-			// 		    			{level.topics.map((topic) =>
-			// 	    					<a key={level.topics.indexOf(topic)} href={`/level/${level.id}/topics/${topic.id}`} className="topic pure-u-1-2">
-			// 			    					<h3 className="text-center">{topic.Topic}</h3>
-			// 			    					{this.renderMedia(topic)}
-			// 	    					</a>
-			// 	    				)}
-			//     				</div>
-			//     				:
-			//     				<p>No topics</p>
-			// 	    		}
-			//     		</div>
-		 //    		) 
-			//     	:
-			//     	<h2>No levels</h2>
-			//     }
-			// </div>
-
-const buttonStyles = {
-    display: 'flex',
-	justifyContent: 'center',
-	alignItems: 'center',
-	backgroundColor: 'skyblue',
-	color: 'white',
-	height: 150,
-	width: 150
-}
-
-const pad = {
-	padding: 20
-}
-
-const flex = {
-	flex: 1,
-	flexDirection: 'row'
-}
-
-const fullWidth = {
-	width: 100
-}
+import { Text, View, TextInput, Button, Image, ScrollView } from 'react-native';
+import Styles from './Styles.js';
 
 class Home extends React.Component {
 	constructor(props){
 		super(props);
 		this.state = {
 			currentPage: 1,
-			name: ''
+			name: '',
+			keywords: ''
 		}
 		this.nextPage = this.nextPage.bind(this);
 	}
@@ -123,9 +36,9 @@ class Home extends React.Component {
 			switch(topic.FeaturedImage.mime){
 				case 'image/jpeg':
 					return (
-						<View className="img-container">
+						<View style={Styles.fullWidth}>
 							<Image source={{uri: `http://192.168.1.5:1337${topic.FeaturedImage.url}`}}
-								style={{height: 400, width: 400}}
+								style={{height: 400, width: '100%'}}
 							/>
 						</View>
 					);
@@ -139,10 +52,17 @@ class Home extends React.Component {
 		return(
 			<ScrollView>
 				<Text>Video Submissions</Text>
-				<View action="/videos" method="GET">
-					<Text htmlFor="keywords">Search Terms</Text>
-					<TextInput type="text" name="keywords"></TextInput>
-					<TextInput type="submit" value="Search"></TextInput>
+				<View>
+					<Text>Search Terms</Text>
+					<TextInput type="text" onChangeText={(text) => this.setState({keywords: text})} value={this.state.keywords}
+						style={{
+							borderWidth: 1,
+							borderColor: 'black'
+						}}
+					/>
+					<Button title="Search"  onPress={() =>
+						this.props.navigation.navigate('VideosIndex', {keywords: this.state.keywords})
+					}/>
 				</View>
 			    <Button title="View all videos" onPress={() =>
 					this.props.navigation.navigate('VideosIndex')
@@ -150,16 +70,16 @@ class Home extends React.Component {
 
 			    {this.state.levels ?
 			    	this.state.levels.map((level) => 
-			    		<View key={level.id} className="flex x-center">
+			    		<View key={level.id} style={{...Styles.flex, ...Styles.column, ...Styles.fullWidth, ...Styles.xCenter}}>
 				    		<Button title={`Level: ${level.Level}`} onPress={() =>
 									this.props.navigation.navigate('Level', {levelID: level.id})
 								}
 							/>
 				    		{level.topics ?
-				    			<View className="topics pure-u-1 flex x-space-around">
+				    			<View style={Styles.fullWidth}>
 					    			{level.topics.map((topic) =>
-				    					<View title="button" key={topic.id} href={`/level/${level.id}/topics/${topic.id}`} className="topic pure-u-1-2">
-						    					<Text className="text-center">{topic.Topic}</Text>
+				    					<View title="button" key={topic.id} href={`/level/${level.id}/topics/${topic.id}`} style={Styles.fullWidth}>
+						    					<Text>{topic.Topic}</Text>
 						    					{this.renderMedia(topic)}
 				    					</View>
 				    				)}
