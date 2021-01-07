@@ -78,8 +78,10 @@ class Home extends React.Component {
 				    		{level.topics ?
 				    			<View style={Styles.fullWidth}>
 					    			{level.topics.map((topic) =>
-				    					<View title="button" key={topic.id} href={`/level/${level.id}/topics/${topic.id}`} style={Styles.fullWidth}>
-						    					<Text>{topic.Topic}</Text>
+				    					<View key={topic.id} style={Styles.fullWidth}>
+						    					<Button title={topic.Topic} onPress={() =>
+													this.props.navigation.navigate('Topic', {levelID: level.id, topicID: topic.id})
+												}/>
 						    					{this.renderMedia(topic)}
 				    					</View>
 				    				)}
