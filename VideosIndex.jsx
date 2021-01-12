@@ -117,7 +117,12 @@ class VideosIndex extends React.Component {
 		return (
 			<ScrollView>			
 				<Text>Videos</Text>
-				<Button title="Refresh" onClick={this.refreshVideos}/>
+				<Button title="Refresh" onPress={
+					() => {
+						this.setState({keywords: ''});
+						this.handleChangePage(`${apiBaseURL}/videos.json?page=${this.state.currentPage}`);
+					}
+				}/>
 				<View>
 					<Text>Search Terms</Text>
 					<TextInput type="text" onChangeText={(text) => this.setState({keywords: text})} value={this.state.keywords}
