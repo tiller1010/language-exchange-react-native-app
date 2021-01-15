@@ -33,5 +33,13 @@ export default Styles = StyleSheet.create({
 	},
 	fullWidth: {
 		width: '100%'
+	},
+	heading: {
+		fontSize: 30,
+		fontWeight: 'bold'
+	},
+	subHeading: {
+		fontSize: 20,
+		fontWeight: 'bold'
 	}
 });

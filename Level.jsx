@@ -45,6 +45,23 @@ class Level extends React.Component {
 			})
 	}
 
+	renderMedia(topic){
+		if(topic.FeaturedImage){
+			switch(topic.FeaturedImage.mime){
+				case 'image/jpeg':
+					return (
+						<View style={Styles.fullWidth}>
+							<Image source={{uri: `http://192.168.1.5:1337${topic.FeaturedImage.url}`}}
+								style={{height: 400, width: '100%'}}
+							/>
+						</View>
+					);
+				default:
+					return <Text>Invalid media</Text>
+			}
+		}
+	}
+
 	render(){
 		return (
 			<ScrollView>
@@ -54,12 +71,13 @@ class Level extends React.Component {
 	    					<Button title={topic.Topic} onPress={() =>
 								this.props.navigation.navigate('Topic', {levelID: this.state.levelID, topicID: topic.id})
 							}/>
+							{this.renderMedia(topic)}
 				    		{topic.challenges ?
 			    				<View style={{...Styles.flex, ...Styles.column, ...Styles.fullWidth, ...Styles.xCenter}}>
 					    			{topic.challenges.map((challenge) =>
 					    				<View key={`${topic.id}_${challenge.id}`} style={{...Styles.flex, ...Styles.column, ...Styles.fullWidth, ...Styles.xCenter}}>
-						    				<View>
-							    				<Text>{challenge.Title}</Text>
+						    				<View style={Styles.pad}>
+							    				<Text style={Styles.heading}>{challenge.Title}</Text>
 						    					<Text>{challenge.Content}</Text>
 					    					</View>
 				    					</View>

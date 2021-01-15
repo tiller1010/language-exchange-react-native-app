@@ -51,9 +51,9 @@ class Home extends React.Component {
 	render(){
 		return(
 			<ScrollView>
-				<Text>Video Submissions</Text>
+				<Text style={Styles.heading}>Video Submissions</Text>
 				<View>
-					<Text>Search Terms</Text>
+					<Text style={Styles.subHeading}>Search Terms</Text>
 					<TextInput type="text" onChangeText={(text) => this.setState({keywords: text})} value={this.state.keywords}
 						style={{
 							borderWidth: 1,

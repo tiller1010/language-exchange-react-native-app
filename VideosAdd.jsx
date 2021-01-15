@@ -112,10 +112,10 @@ class VideosAdd extends React.Component {
 	render(){
 
 		return (
-			<View>
-				<Text>Video Add</Text>
+			<ScrollView>
+				<Text style={Styles.heading}>Video Add</Text>
 				<View>
-					<Text>Title:</Text>
+					<Text style={Styles.subHeading}>Title:</Text>
 					<TextInput type="text" onChangeText={(text) => this.handleTextChange(text)} defaultValue={this.state.title} required
 						style={{
 							borderWidth: 1,
@@ -132,7 +132,7 @@ class VideosAdd extends React.Component {
 				</View>
 				<View>
 					<View>
-						<Text>Video Preview</Text>
+						<Text style={Styles.subHeading}>Video Preview</Text>
 						<Video
 							source={this.state.video}
 							ref={(ref) => {
@@ -144,11 +144,11 @@ class VideosAdd extends React.Component {
 						/>
 					</View>
 					<View>
-						<Text>Thumbnail Preview</Text>
+						<Text style={Styles.subHeading}>Thumbnail Preview</Text>
 						<ImageBackground source={this.state.thumbnail} style={{height: 225, width: '100%'}}></ImageBackground>
 					</View>
 				</View>
-			</View>
+			</ScrollView>
 		);
 	}
 }
