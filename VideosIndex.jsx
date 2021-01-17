@@ -1,5 +1,4 @@
 import React from 'react';
-// import lozad from 'lozad';
 import { Text, View, TextInput, Button, Image, ScrollView } from 'react-native';
 import { Video } from 'expo-av';
 import { parse as URLParse } from 'search-params';
@@ -16,10 +15,6 @@ async function getVideos(url='http://192.168.1.5:3000/videos.json'){
 		.then((response) => response.json())
 		.catch((e) => console.log(e));
 }
-
-// Enable lazy loading
-// const lozadObserver = lozad();
-// lozadObserver.observe();
 
 class VideosIndex extends React.Component {
 	constructor(props){
@@ -161,13 +156,19 @@ class VideosIndex extends React.Component {
 									{video.src ?
 										<View>
 											<Video
-												source={{uri: apiBaseURL + '/' + video.src}}
 												posterSource={{uri: video.thumbnailSrc ? apiBaseURL + '/' + video.thumbnailSrc : apiBaseURL + '/images/videoPlaceholder.png'}}
 												ref={(ref) => {
-													this.player = ref
+													if(ref){
+														ref.loadAsync({uri: apiBaseURL + '/' + video.src})
+															.then(() => {
+																ref.setState({
+																	showPoster: false
+																});
+															});
+													}
 												}}
 												style={{height: 225, width: '100%'}}
-												// usePoster={true}
+												usePoster={true}
 												useNativeControls={true}
 												// overrideFileExtensionAndroid="mp4"
 											/>
