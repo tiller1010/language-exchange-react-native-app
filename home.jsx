@@ -48,6 +48,10 @@ class Home extends React.Component {
 		}
 	}
 
+	randomTopics(level){
+		return level.topics.sort(() => .5 - Math.random()).slice(0, 5);
+	}
+
 	render(){
 		return(
 			<ScrollView>
@@ -77,7 +81,7 @@ class Home extends React.Component {
 							/>
 				    		{level.topics ?
 				    			<View style={Styles.fullWidth}>
-					    			{level.topics.map((topic) =>
+					    			{this.randomTopics(level).map((topic) =>
 				    					<View key={topic.id} style={Styles.fullWidth}>
 						    					<Button title={topic.Topic} onPress={() =>
 													this.props.navigation.navigate('Topic', {levelID: level.id, topicID: topic.id})

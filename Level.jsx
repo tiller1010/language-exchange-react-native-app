@@ -62,6 +62,10 @@ class Level extends React.Component {
 		}
 	}
 
+	randomChallenges(topic){
+		return topic.challenges.sort(() => .5 - Math.random()).slice(0, 5);
+	}
+
 	render(){
 		return (
 			<ScrollView>
@@ -74,7 +78,7 @@ class Level extends React.Component {
 							{this.renderMedia(topic)}
 				    		{topic.challenges ?
 			    				<View style={{...Styles.flex, ...Styles.column, ...Styles.fullWidth, ...Styles.xCenter}}>
-					    			{topic.challenges.map((challenge) =>
+					    			{this.randomChallenges(topic).map((challenge) =>
 					    				<View key={`${topic.id}_${challenge.id}`} style={{...Styles.flex, ...Styles.column, ...Styles.fullWidth, ...Styles.xCenter}}>
 						    				<View style={Styles.pad}>
 							    				<Text style={Styles.heading}>{challenge.Title}</Text>
