@@ -10,16 +10,18 @@ function createFormData(title, video, thumbnail){
 
   data.append('title', title);
 
+  var videoFileExtension = video.uri.slice(video.uri.length - 3, video.uri.length);
+  var videoType = videoFileExtension === 'mov' ? 'video/quicktime' : 'video' ;
   var videoData = {
-    name: 'video',
-    type: video.type,
+    name: title + '-video.' + videoFileExtension,
+    type: videoType,
     uri:
       Platform.OS === 'android' ? video.uri : video.uri.replace('file://', '')
   }
   data.append('video', videoData);
 
   var thumbnailData = {
-    name: 'thumbnail',
+    name: title + '-thumbnail',
     type: thumbnail.type,
     uri:
       Platform.OS === 'android' ? thumbnail.uri : thumbnail.uri.replace('file://', '')
@@ -65,7 +67,8 @@ class VideosAdd extends React.Component {
 
 	async handleVideoUploadChange(event){
 		const videoOptions = {
-			mediaTypes: ImagePicker.MediaTypeOptions.Videos
+			mediaTypes: ImagePicker.MediaTypeOptions.Videos,
+			videoExportPreset: ImagePicker.VideoExportPreset.MediumQuality
 		}
 		let response = await ImagePicker.launchImageLibraryAsync(videoOptions);
 		if(response.uri){
@@ -84,12 +87,14 @@ class VideosAdd extends React.Component {
 				body: createFormData(state.title, state.video, state.thumbnail)
 			}).then((response) => response)
 			  .then((data) => console.log(data))
-			  .then(this.createAlert())
+			  .then(this.createAlert('Uploaded Successfully', true))
 			  .catch((e) => console.log(e));
+		} else {
+			this.createAlert('Complete the form before submitting');
 		}
 	}
 
-	createAlert(){
+	createAlert(alertPhrase, clearState = false){
 
 		const emptyVideo = {
 			cancelled: false,
@@ -100,11 +105,15 @@ class VideosAdd extends React.Component {
 			width: 720
 		}
 		Alert.alert(
-			'Uploaded Successfully',
+			alertPhrase,
 			'',
 			[{
 				text: 'Close',
-				onPress: () => this.setState({title: '', video: emptyVideo, thumbnail: null})
+				onPress: () => {
+					if(clearState){
+						this.setState({title: '', video: emptyVideo, thumbnail: null})
+					}
+				}
 			}]
 		);
 	}
