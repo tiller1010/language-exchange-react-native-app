@@ -45,6 +45,13 @@ class VideosAdd extends React.Component {
 	}
 
 	componentDidMount(){
+		if(this.props.route.params){
+			if(this.props.route.params.challenge){
+				this.setState({
+					title: this.props.route.params.challenge
+				});
+			}
+		}
 	}
 
 	handleTextChange(text){

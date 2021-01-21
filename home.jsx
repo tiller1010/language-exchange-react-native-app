@@ -7,18 +7,9 @@ class Home extends React.Component {
 	constructor(props){
 		super(props);
 		this.state = {
-			currentPage: 1,
 			name: '',
 			keywords: ''
 		}
-		this.nextPage = this.nextPage.bind(this);
-	}
-
-	nextPage(){
-		var currentPage = this.state.currentPage;
-		this.setState({
-			currentPage: currentPage + 1
-		});
 	}
 
 	async componentDidMount(){
@@ -49,7 +40,13 @@ class Home extends React.Component {
 	}
 
 	randomTopics(level){
-		return level.topics.sort(() => .5 - Math.random()).slice(0, 5);
+		if(level.topicsRandomized){
+			return level.topics;
+		} else {
+			level.topicsRandomized = true;
+			level.topics = level.topics.sort(() => .5 - Math.random()).slice(0, 5);
+			return level.topics;
+		}
 	}
 
 	render(){
