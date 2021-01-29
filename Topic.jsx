@@ -93,9 +93,14 @@ class Topic extends React.Component {
 					    				:
 					    				<Text></Text>
 					    			}
-									<Button title="Submit your own" onPress={() => 
-								    	this.props.navigation.navigate('VideosAdd', {challenge: challenge.Title})
-								    }/>
+					    			<View style={{...Styles.flex, ...Styles.xSpaceBetween}}>
+										<Button title="View others" onPress={() => 
+									    	this.props.navigation.navigate('VideosIndex', {keywords: challenge.Title})
+									    }/>
+										<Button title="Submit your own" onPress={() => 
+									    	this.props.navigation.navigate('VideosAdd', {challenge: challenge.Title})
+									    }/>
+						    		</View>
 					    		</View>
 				    		</View>
 			    		)}

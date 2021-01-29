@@ -31,6 +31,9 @@ export default Styles = StyleSheet.create({
 	xCenter: {
 		justifyContent: 'center'
 	},
+	xSpaceBetween: {
+		justifyContent: 'space-between'
+	},
 	fullWidth: {
 		width: '100%'
 	},
