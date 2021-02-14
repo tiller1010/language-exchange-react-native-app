@@ -88,7 +88,8 @@ class VideosAdd extends React.Component {
 	async handleSubmit(){
 		const state = {...this.state};
 		if(state.title && state.video && state.thumbnail){
-			fetch('http://192.168.1.5:3000/videos/add', {
+			console.log('Fetching from:', process.env.APP_SERVER_URL);
+			fetch(`${process.env.APP_SERVER_URL}/videos/add`, {
 				method: 'POST',
 				mode: 'no-cors',
 				body: createFormData(state.title, state.video, state.thumbnail)

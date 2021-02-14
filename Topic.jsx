@@ -15,7 +15,8 @@ class Topic extends React.Component {
 	async componentDidMount(){
 		if(this.props.route.params){
 			if(this.props.route.params.topicID){
-				axios.get(`http://192.168.1.5:1337/topics/${this.props.route.params.topicID}`)
+				console.log('Fetching from:', process.env.STRAPI_URL);
+				axios.get(`${process.env.STRAPI_URL}/topics/${this.props.route.params.topicID}`)
 					.then(res => {
 						if(res.data){
 							this.setState({
@@ -24,7 +25,7 @@ class Topic extends React.Component {
 						}
 					})
 
-				axios.get(`http://192.168.1.5:1337/challenges`)
+				axios.get(`${process.env.STRAPI_URL}/challenges`)
 					.then(res => {
 						if(res.data){
 							res.data.forEach((challenge) => {
@@ -52,7 +53,7 @@ class Topic extends React.Component {
 					case 'image/jpeg':
 						return (
 							<View style={Styles.fullWidth}>
-								<Image source={{uri: `http://192.168.1.5:1337${challenge.FeaturedMedia[0].url}`}}
+								<Image source={{uri: `${process.env.STRAPI_URL}${challenge.FeaturedMedia[0].url}`}}
 									style={{height: 400, width: '100%'}}
 								/>
 							</View>
@@ -60,7 +61,7 @@ class Topic extends React.Component {
 					case 'video/mp4':
 						return (
 							<Video
-								source={{uri: `http://192.168.1.5:1337${challenge.FeaturedMedia[0].url}`}}
+								source={{uri: `${process.env.STRAPI_URL}${challenge.FeaturedMedia[0].url}`}}
 								ref={(ref) => {
 									this.player = ref
 								}}

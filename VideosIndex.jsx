@@ -4,13 +4,11 @@ import { Video } from 'expo-av';
 import { parse as URLParse } from 'search-params';
 import Styles from './Styles.js';
 
-async function getVideos(url='http://192.168.1.5:3000/videos.json'){
+async function getVideos(url=`${process.env.APP_SERVER_URL}/videos.json`){
 
 	var searchKeywords = '';
 	var page = '1';
 
-	// Change this to use an env setting
-	var apiBaseURL = 'http://192.168.1.5:3000';
 	return fetch(url)
 		.then((response) => response.json())
 		.catch((e) => console.log(e));
@@ -36,7 +34,8 @@ class VideosIndex extends React.Component {
 				this.setState({
 					keywords: this.props.route.params.keywords
 				});
-				this.handleSearch(`http://192.168.1.5:3000/videos.json?keywords=${this.props.route.params.keywords}`);
+				console.log('Fetching from:', process.env.APP_SERVER_URL);
+				this.handleSearch(`${process.env.APP_SERVER_URL}/videos.json?keywords=${this.props.route.params.keywords}`);
 				return;
 			}
 		}
@@ -87,7 +86,7 @@ class VideosIndex extends React.Component {
 
 	render(){
 
-		var apiBaseURL = 'http://192.168.1.5:3000';
+		var apiBaseURL = process.env.APP_SERVER_URL;
 		var keywords = this.state.keywords;
 
 		return (
@@ -107,7 +106,7 @@ class VideosIndex extends React.Component {
 							borderColor: 'black'
 						}}
 					/>
-					<Button title="Search" onPress={() => this.handleSearch(`http://192.168.1.5:3000/videos.json?keywords=${this.state.keywords}`)}/>
+					<Button title="Search" onPress={() => this.handleSearch(`${apiBaseURL}/videos.json?keywords=${this.state.keywords}`)}/>
 				</View>
 			    <View>
 				    <Button title="Clear filters" onPress={

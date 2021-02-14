@@ -13,8 +13,8 @@ class Home extends React.Component {
 	}
 
 	async componentDidMount(){
-
-		axios.get('http://192.168.1.5:1337/levels')
+		console.log('Fetching from:', process.env.STRAPI_URL);
+		axios.get(`${process.env.STRAPI_URL}/levels`)
 			.then(res => {
 				this.setState({
 					levels: res.data
@@ -28,7 +28,7 @@ class Home extends React.Component {
 				case 'image/jpeg':
 					return (
 						<View style={Styles.fullWidth}>
-							<Image source={{uri: `http://192.168.1.5:1337${topic.FeaturedImage.url}`}}
+							<Image source={{uri: `${process.env.STRAPI_URL}${topic.FeaturedImage.url}`}}
 								style={{height: 400, width: '100%'}}
 							/>
 						</View>
