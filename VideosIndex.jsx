@@ -3,6 +3,7 @@ import { Text, View, TextInput, Button, Image, ScrollView } from 'react-native';
 import { Video } from 'expo-av';
 import { parse as URLParse } from 'search-params';
 import Styles from './Styles.js';
+import { RadioButton } from 'react-native-paper';
 
 async function getVideos(url=`${process.env.APP_SERVER_URL}/videos.json`){
 
@@ -21,21 +22,35 @@ class VideosIndex extends React.Component {
 			videos: [],
 			pages: [],
 			currentPage: 1,
-			keywords: ''
+			keywords: '',
+			sortControlStatus: '',
+			sort: ''
 		}
 		this.pagination = this.pagination.bind(this);
 		this.handleChangePage = this.handleChangePage.bind(this);
 		this.handleSearch = this.handleSearch.bind(this);
+		this.toggleSortControls = this.toggleSortControls.bind(this);
+		this.handleSortChange = this.handleSortChange.bind(this);
 	}
 
 	async componentDidMount(){
 		if(this.props.route.params){
-			if(this.props.route.params.keywords){
-				this.setState({
-					keywords: this.props.route.params.keywords
-				});
+			if(this.props.route.params.keywords || this.props.route.params.sort){
 				console.log('Fetching from:', process.env.APP_SERVER_URL);
-				this.handleSearch(`${process.env.APP_SERVER_URL}/videos.json?keywords=${this.props.route.params.keywords}`);
+				if(this.props.route.params.keywords){
+					this.setState({
+						keywords: this.props.route.params.keywords
+					}, () => {
+						this.handleSearch(`${process.env.APP_SERVER_URL}/videos.json?keywords=${this.state.keywords}&sort=${this.state.sort}`);
+					});
+				}
+				if(this.props.route.params.sort){
+					this.setState({
+						sort: this.props.route.params.sort
+					}, () => {
+						this.handleSearch(`${process.env.APP_SERVER_URL}/videos.json?keywords=${this.state.keywords}&sort=${this.state.sort}`);
+					});
+				}
 				return;
 			}
 		}
@@ -76,6 +91,21 @@ class VideosIndex extends React.Component {
 		}
 	}
 
+	toggleSortControls(){
+		let newStatus = this.state.sortControlStatus ? '' : 'open';
+		this.setState({
+			sortControlStatus: newStatus
+		});
+	}
+
+	handleSortChange(value){
+		this.setState({
+			sort: value
+		}, () => {
+			this.handleSearch(`${process.env.APP_SERVER_URL}/videos.json?keywords=${this.state.keywords}&sort=${this.state.sort}`);
+		});
+	}
+
 	pagination(pages){
 		var pageLinks = [];
 		for(var i = 1; i <= pages; i++){
@@ -108,6 +138,35 @@ class VideosIndex extends React.Component {
 					/>
 					<Button title="Search" onPress={() => this.handleSearch(`${apiBaseURL}/videos.json?keywords=${this.state.keywords}`)}/>
 				</View>
+					<View style={Styles.flex}>
+							{/*<FontAwesomeIcon icon={faSlidersH}/>*/}
+						<Button onPress={this.toggleSortControls}
+							title="Toggle Sort Controls"
+							icon="mdi-tune-variant"
+						/>
+						<View>
+							<View>
+								<Text>All</Text>
+								<RadioButton name="sort" value="" status={this.state.sort === '' ? 'checked' : 'unchecked'} onPress={() => this.handleSortChange('')}/>
+							</View>
+							<View>
+								<Text>Oldest</Text>
+								<RadioButton name="sort" value="Oldest" status={this.state.sort === 'Oldest' ? 'checked' : 'unchecked'} onPress={() => this.handleSortChange('Oldest')}/>
+							</View>
+							<View>
+								<Text>Recent</Text>
+								<RadioButton name="sort" value="Recent" status={this.state.sort === 'Recent' ? 'checked' : 'unchecked'} onPress={() => this.handleSortChange('Recent')}/>
+							</View>
+							<View>
+								<Text>A-Z</Text>
+								<RadioButton name="sort" value="A-Z" status={this.state.sort === 'A-Z' ? 'checked' : 'unchecked'} onPress={() => this.handleSortChange('A-Z')}/>
+							</View>
+							<View>
+								<Text>Z-A</Text>
+								<RadioButton name="sort" value="Z-A" status={this.state.sort === 'Z-A' ? 'checked' : 'unchecked'} onPress={() => this.handleSortChange('Z-A')}/>
+							</View>
+						</View>
+					</View>
 			    <View>
 				    <Button title="Clear filters" onPress={
 						() => {

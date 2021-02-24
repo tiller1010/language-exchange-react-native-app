@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Text, View, TextInput, Button, Image, ScrollView } from 'react-native';
 import { Video } from 'expo-av';
 import Styles from './Styles.js';
+import { RadioButton } from 'react-native-paper';
 
 class Home extends React.Component {
 	constructor(props){
@@ -10,8 +11,12 @@ class Home extends React.Component {
 		this.state = {
 			name: '',
 			keywords: '',
+			sort: '',
+			sortControlStatus: '',
 			recentVideos: []
 		}
+		this.toggleSortControls = this.toggleSortControls.bind(this);
+		this.handleSortChange = this.handleSortChange.bind(this);
 	}
 
 	async componentDidMount(){
@@ -32,6 +37,21 @@ class Home extends React.Component {
 					levels: res.data
 				});
 			})
+	}
+
+	toggleSortControls(){
+		let newStatus = this.state.sortControlStatus ? '' : 'open';
+		this.setState({
+			sortControlStatus: newStatus
+		});
+	}
+
+	handleSortChange(value){
+		this.setState({
+			sort: value
+		}, () => {
+			this.props.navigation.navigate('VideosIndex', {sort: this.state.sort, keywords: this.state.keywords || ''});
+		});
 	}
 
 	renderMedia(topic){
@@ -78,9 +98,38 @@ class Home extends React.Component {
 								borderColor: 'black'
 							}}
 						/>
-						<Button title="Search"  onPress={() =>
+						<Button title="Search" onPress={() =>
 							this.props.navigation.navigate('VideosIndex', {keywords: this.state.keywords})
 						}/>
+						<View style={Styles.flex}>
+								{/*<FontAwesomeIcon icon={faSlidersH}/>*/}
+							<Button onPress={this.toggleSortControls}
+								title="Toggle Sort Controls"
+								icon="mdi-tune-variant"
+							/>
+							<View>
+								<View>
+									<Text>All</Text>
+									<RadioButton name="sort" value="" status={this.state.sort === '' ? 'checked' : 'unchecked'} onPress={() => this.handleSortChange('')}/>
+								</View>
+								<View>
+									<Text>Oldest</Text>
+									<RadioButton name="sort" value="Oldest" status={this.state.sort === 'Oldest' ? 'checked' : 'unchecked'} onPress={() => this.handleSortChange('Oldest')}/>
+								</View>
+								<View>
+									<Text>Recent</Text>
+									<RadioButton name="sort" value="Recent" status={this.state.sort === 'Recent' ? 'checked' : 'unchecked'} onPress={() => this.handleSortChange('Recent')}/>
+								</View>
+								<View>
+									<Text>A-Z</Text>
+									<RadioButton name="sort" value="A-Z" status={this.state.sort === 'A-Z' ? 'checked' : 'unchecked'} onPress={() => this.handleSortChange('A-Z')}/>
+								</View>
+								<View>
+									<Text>Z-A</Text>
+									<RadioButton name="sort" value="Z-A" status={this.state.sort === 'Z-A' ? 'checked' : 'unchecked'} onPress={() => this.handleSortChange('Z-A')}/>
+								</View>
+							</View>
+						</View>
 					</View>
 				    <Button title="View all videos" onPress={() =>
 						this.props.navigation.navigate('VideosIndex')
