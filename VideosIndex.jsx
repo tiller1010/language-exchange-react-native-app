@@ -1,9 +1,10 @@
 import React from 'react';
-import { Text, View, TextInput, Button, Image, ScrollView } from 'react-native';
+import { Text, View, TextInput, Image, Button as TextButton, ScrollView } from 'react-native';
 import { Video } from 'expo-av';
 import { parse as URLParse } from 'search-params';
 import Styles from './Styles.js';
 import { RadioButton } from 'react-native-paper';
+import { Button } from 'react-native-paper';
 
 async function getVideos(url=`${process.env.APP_SERVER_URL}/videos.json`){
 
@@ -122,7 +123,7 @@ class VideosIndex extends React.Component {
 		return (
 			<ScrollView>			
 				<Text style={Styles.heading}>Videos</Text>
-				<Button title="Refresh" onPress={
+				<Button icon="refresh" onPress={
 					() => {
 						this.setState({keywords: ''});
 						this.handleChangePage(`${apiBaseURL}/videos.json?page=${this.state.currentPage}`);
@@ -136,13 +137,12 @@ class VideosIndex extends React.Component {
 							borderColor: 'black'
 						}}
 					/>
-					<Button title="Search" onPress={() => this.handleSearch(`${apiBaseURL}/videos.json?keywords=${this.state.keywords}`)}/>
+					<Button icon="magnify" onPress={() => this.handleSearch(`${apiBaseURL}/videos.json?keywords=${this.state.keywords}`)}/>
 				</View>
 					<View style={Styles.flex}>
 							{/*<FontAwesomeIcon icon={faSlidersH}/>*/}
 						<Button onPress={this.toggleSortControls}
-							title="Toggle Sort Controls"
-							icon="mdi-tune-variant"
+							icon="tune"
 						/>
 						<View>
 							<View>
@@ -168,7 +168,7 @@ class VideosIndex extends React.Component {
 						</View>
 					</View>
 			    <View>
-				    <Button title="Clear filters" onPress={
+				    <TextButton title="Clear filters" onPress={
 						() => {
 							this.setState({keywords: ''});
 							this.handleChangePage(`${apiBaseURL}/videos.json`);
@@ -176,7 +176,7 @@ class VideosIndex extends React.Component {
 				    }/>
 			    </View>
 			    <View>
-				    <Button title="Add a video" onPress={() => 
+				    <TextButton title="Add a video" onPress={() => 
 				    	this.props.navigation.navigate('VideosAdd')
 				    }/>
 			    </View>
@@ -185,19 +185,19 @@ class VideosIndex extends React.Component {
 						<View style={Styles.flex}>
 							{this.state.currentPage > 1 ?
 								<View>
-									<Button title="Prev" onPress={() => this.handleChangePage(`${apiBaseURL}/videos.json?${keywords ? 'keywords=' + keywords + '&' : ''}page=${Number(this.state.currentPage) - 1}`)}/>
+									<TextButton title="Prev" onPress={() => this.handleChangePage(`${apiBaseURL}/videos.json?${keywords ? 'keywords=' + keywords + '&' : ''}page=${Number(this.state.currentPage) - 1}`)}/>
 								</View>
 								:
 								<Text></Text>
 							}
 							{this.state.pages.map((page) =>
 								<View key={this.state.pages.indexOf(page)}>
-									<Button title={`${page.pageNumber}`} onPress={() => this.handleChangePage(`${apiBaseURL}/videos.json?${keywords ? 'keywords=' + keywords + '&' : ''}page=${page.pageNumber}`)}/>
+									<TextButton title={`${page.pageNumber}`} onPress={() => this.handleChangePage(`${apiBaseURL}/videos.json?${keywords ? 'keywords=' + keywords + '&' : ''}page=${page.pageNumber}`)}/>
 								</View>
 							)}
 							{this.state.currentPage < this.state.pages.length ?
 								<View>
-									<Button title="Next" onPress={() => this.handleChangePage(`${apiBaseURL}/videos.json?${keywords ? 'keywords=' + keywords + '&' : ''}page=${Number(this.state.currentPage) + 1}`)}/>
+									<TextButton title="Next" onPress={() => this.handleChangePage(`${apiBaseURL}/videos.json?${keywords ? 'keywords=' + keywords + '&' : ''}page=${Number(this.state.currentPage) + 1}`)}/>
 								</View>
 								:
 								<Text></Text>
@@ -244,19 +244,19 @@ class VideosIndex extends React.Component {
 						<View style={Styles.flex}>
 							{this.state.currentPage > 1 ?
 								<View>
-									<Button title="Prev" onPress={() => this.handleChangePage(`${apiBaseURL}/videos.json?${keywords ? 'keywords=' + keywords + '&' : ''}page=${Number(this.state.currentPage) - 1}`)}/>
+									<TextButton title="Prev" onPress={() => this.handleChangePage(`${apiBaseURL}/videos.json?${keywords ? 'keywords=' + keywords + '&' : ''}page=${Number(this.state.currentPage) - 1}`)}/>
 								</View>
 								:
 								<Text></Text>
 							}
 							{this.state.pages.map((page) =>
 								<View key={this.state.pages.indexOf(page)}>
-									<Button title={`${page.pageNumber}`} onPress={() => this.handleChangePage(`${apiBaseURL}/videos.json?${keywords ? 'keywords=' + keywords + '&' : ''}page=${page.pageNumber}`)}/>
+									<TextButton title={`${page.pageNumber}`} onPress={() => this.handleChangePage(`${apiBaseURL}/videos.json?${keywords ? 'keywords=' + keywords + '&' : ''}page=${page.pageNumber}`)}/>
 								</View>
 							)}
 							{this.state.currentPage < this.state.pages.length ?
 								<View>
-									<Button title="Next" onPress={() => this.handleChangePage(`${apiBaseURL}/videos.json?${keywords ? 'keywords=' + keywords + '&' : ''}page=${Number(this.state.currentPage) + 1}`)}/>
+									<TextButton title="Next" onPress={() => this.handleChangePage(`${apiBaseURL}/videos.json?${keywords ? 'keywords=' + keywords + '&' : ''}page=${Number(this.state.currentPage) + 1}`)}/>
 								</View>
 								:
 								<Text></Text>

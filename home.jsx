@@ -1,9 +1,10 @@
 import React from 'react';
 import axios from 'axios';
-import { Text, View, TextInput, Button, Image, ScrollView } from 'react-native';
+import { Text, View, TextInput, Image, Button as TextButton, ScrollView } from 'react-native';
 import { Video } from 'expo-av';
 import Styles from './Styles.js';
 import { RadioButton } from 'react-native-paper';
+import { Button } from 'react-native-paper';
 
 class Home extends React.Component {
 	constructor(props){
@@ -98,14 +99,13 @@ class Home extends React.Component {
 								borderColor: 'black'
 							}}
 						/>
-						<Button title="Search" onPress={() =>
+						<Button icon="magnify" onPress={() =>
 							this.props.navigation.navigate('VideosIndex', {keywords: this.state.keywords})
 						}/>
 						<View style={Styles.flex}>
 								{/*<FontAwesomeIcon icon={faSlidersH}/>*/}
 							<Button onPress={this.toggleSortControls}
-								title="Toggle Sort Controls"
-								icon="mdi-tune-variant"
+								icon="tune"
 							/>
 							<View>
 								<View>
@@ -131,7 +131,7 @@ class Home extends React.Component {
 							</View>
 						</View>
 					</View>
-				    <Button title="View all videos" onPress={() =>
+				    <Button icon="play-circle" onPress={() =>
 						this.props.navigation.navigate('VideosIndex')
 					}/>
 				</View>
@@ -166,7 +166,7 @@ class Home extends React.Component {
 			    {this.state.levels ?
 			    	this.state.levels.map((level) => 
 			    		<View key={level.id} style={{...Styles.flex, ...Styles.column, ...Styles.fullWidth, ...Styles.xCenter}}>
-				    		<Button title={`Level: ${level.Level}`} onPress={() =>
+				    		<TextButton title={`Level: ${level.Level}`} onPress={() =>
 									this.props.navigation.navigate('Level', {levelID: level.id})
 								}
 							/>
@@ -174,7 +174,7 @@ class Home extends React.Component {
 				    			<View style={Styles.fullWidth}>
 					    			{this.randomTopics(level).map((topic) =>
 				    					<View key={topic.id} style={Styles.fullWidth}>
-						    					<Button title={topic.Topic} onPress={() =>
+						    					<TextButton title={topic.Topic} onPress={() =>
 													this.props.navigation.navigate('Topic', {levelID: level.id, topicID: topic.id})
 												}/>
 						    					{this.renderMedia(topic)}

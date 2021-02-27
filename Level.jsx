@@ -78,7 +78,10 @@ class Level extends React.Component {
 							}/>
 							{this.renderMedia(topic)}
 				    		{topic.challenges ?
-			    				<View style={{...Styles.flex, ...Styles.column, ...Styles.fullWidth, ...Styles.xCenter}}>
+								<ScrollView horizontal>
+						    		<View style={{...Styles.pad, width: 400}}>
+					    				<Text style={{...Styles.subHeading, textAlign: 'center'}}>Need a quick refresher? Slide forward to preview challenges.</Text>
+				    				</View>
 					    			{this.randomChallenges(topic).map((challenge) =>
 					    				<View key={`${topic.id}_${challenge.id}`} style={{...Styles.flex, ...Styles.column, ...Styles.fullWidth, ...Styles.xCenter}}>
 						    				<View style={Styles.pad}>
@@ -87,7 +90,7 @@ class Level extends React.Component {
 					    					</View>
 				    					</View>
 				    				)}
-			    				</View>
+								</ScrollView>
 			    				:
 			    				<Text>No challenges</Text>
 				    		}
