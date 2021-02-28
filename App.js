@@ -16,8 +16,8 @@ const theme = {
   ...DefaultTheme,
   colors: {
     ...DefaultTheme.colors,
-    primary: 'tomato',
-    accent: 'yellow'
+    primary: '#9f74e4',
+    accent: '#747de8'
   }
 
 }

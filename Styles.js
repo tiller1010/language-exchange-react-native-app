@@ -31,8 +31,14 @@ export default Styles = StyleSheet.create({
 	xCenter: {
 		justifyContent: 'center'
 	},
+	xEnd: {
+		justifyContent: 'flex-end'
+	},
 	xSpaceBetween: {
 		justifyContent: 'space-between'
+	},
+	yCenter: {
+		alignItems: 'center'
 	},
 	fullWidth: {
 		width: '100%'

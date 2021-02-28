@@ -3,8 +3,7 @@ import axios from 'axios';
 import { Text, View, TextInput, Image, Button as TextButton, ScrollView } from 'react-native';
 import { Video } from 'expo-av';
 import Styles from './Styles.js';
-import { RadioButton } from 'react-native-paper';
-import { Button } from 'react-native-paper';
+import { Button, RadioButton, Searchbar, Menu } from 'react-native-paper';
 
 class Home extends React.Component {
 	constructor(props){
@@ -41,7 +40,7 @@ class Home extends React.Component {
 	}
 
 	toggleSortControls(){
-		let newStatus = this.state.sortControlStatus ? '' : 'open';
+		let newStatus = this.state.sortControlStatus ? '' : 'visible';
 		this.setState({
 			sortControlStatus: newStatus
 		});
@@ -49,7 +48,8 @@ class Home extends React.Component {
 
 	handleSortChange(value){
 		this.setState({
-			sort: value
+			sort: value,
+			sortControlStatus: ''
 		}, () => {
 			this.props.navigation.navigate('VideosIndex', {sort: this.state.sort, keywords: this.state.keywords || ''});
 		});
@@ -93,41 +93,32 @@ class Home extends React.Component {
 					<Text style={Styles.heading}>User Submissions</Text>
 					<View>
 						<Text style={Styles.subHeading}>Search video submissions</Text>
-						<TextInput type="text" onChangeText={(text) => this.setState({keywords: text})} value={this.state.keywords}
+						<Searchbar type="text" onChangeText={(text) => this.setState({keywords: text})} value={this.state.keywords}
 							style={{
 								borderWidth: 1,
 								borderColor: 'black'
 							}}
 						/>
-						<Button icon="magnify" onPress={() =>
-							this.props.navigation.navigate('VideosIndex', {keywords: this.state.keywords})
-						}/>
-						<View style={Styles.flex}>
-								{/*<FontAwesomeIcon icon={faSlidersH}/>*/}
-							<Button onPress={this.toggleSortControls}
-								icon="tune"
-							/>
-							<View>
-								<View>
-									<Text>All</Text>
-									<RadioButton name="sort" value="" status={this.state.sort === '' ? 'checked' : 'unchecked'} onPress={() => this.handleSortChange('')}/>
-								</View>
-								<View>
-									<Text>Oldest</Text>
-									<RadioButton name="sort" value="Oldest" status={this.state.sort === 'Oldest' ? 'checked' : 'unchecked'} onPress={() => this.handleSortChange('Oldest')}/>
-								</View>
-								<View>
-									<Text>Recent</Text>
-									<RadioButton name="sort" value="Recent" status={this.state.sort === 'Recent' ? 'checked' : 'unchecked'} onPress={() => this.handleSortChange('Recent')}/>
-								</View>
-								<View>
-									<Text>A-Z</Text>
-									<RadioButton name="sort" value="A-Z" status={this.state.sort === 'A-Z' ? 'checked' : 'unchecked'} onPress={() => this.handleSortChange('A-Z')}/>
-								</View>
-								<View>
-									<Text>Z-A</Text>
-									<RadioButton name="sort" value="Z-A" status={this.state.sort === 'Z-A' ? 'checked' : 'unchecked'} onPress={() => this.handleSortChange('Z-A')}/>
-								</View>
+						<View style={{...Styles.flex, ...Styles.xCenter}}>
+							<View style={Styles.pad}>
+								<Menu
+									anchor={<Button onPress={this.toggleSortControls} icon="tune" mode="contained" labelStyle={{color: 'white'}}>Search & Sort</Button>}
+									visible={this.state.sortControlStatus}
+								>
+									<RadioButton.Group>
+										<RadioButton.Item label="All" name="sort" value="" status={this.state.sort === '' ? 'checked' : 'unchecked'} onPress={() => this.handleSortChange('')}/>
+										<RadioButton.Item label="Oldest" name="sort" value="Oldest" status={this.state.sort === 'Oldest' ? 'checked' : 'unchecked'} onPress={() => this.handleSortChange('Oldest')}/>
+										<RadioButton.Item label="Recent" name="sort" value="Recent" status={this.state.sort === 'Recent' ? 'checked' : 'unchecked'} onPress={() => this.handleSortChange('Recent')}/>
+										<RadioButton.Item label="A-Z" name="sort" value="A-Z" status={this.state.sort === 'A-Z' ? 'checked' : 'unchecked'} onPress={() => this.handleSortChange('A-Z')}/>
+										<RadioButton.Item label="Z-A" name="sort" value="Z-A" status={this.state.sort === 'Z-A' ? 'checked' : 'unchecked'} onPress={() => this.handleSortChange('Z-A')}/>
+									</RadioButton.Group>
+									<Menu.Item icon="close" title="Close" onPress={this.toggleSortControls}/>
+								</Menu>
+							</View>
+							<View style={Styles.pad}>
+								<Button icon="magnify" mode="contained" labelStyle={{color: 'white'}} onPress={() =>
+									this.props.navigation.navigate('VideosIndex', {keywords: this.state.keywords})
+								}>Search</Button>
 							</View>
 						</View>
 					</View>
@@ -166,17 +157,17 @@ class Home extends React.Component {
 			    {this.state.levels ?
 			    	this.state.levels.map((level) => 
 			    		<View key={level.id} style={{...Styles.flex, ...Styles.column, ...Styles.fullWidth, ...Styles.xCenter}}>
-				    		<TextButton title={`Level: ${level.Level}`} onPress={() =>
+				    		<Button icon="arrow-right" mode="outlined" contentStyle={{flexDirection: 'row-reverse'}} onPress={() =>
 									this.props.navigation.navigate('Level', {levelID: level.id})
 								}
-							/>
+							>{`Level ${level.Level}`}</Button>
 				    		{level.topics ?
 				    			<View style={Styles.fullWidth}>
 					    			{this.randomTopics(level).map((topic) =>
 				    					<View key={topic.id} style={Styles.fullWidth}>
-						    					<TextButton title={topic.Topic} onPress={() =>
+						    					<Button icon="arrow-right" mode="outlined" contentStyle={{flexDirection: 'row-reverse'}} onPress={() =>
 													this.props.navigation.navigate('Topic', {levelID: level.id, topicID: topic.id})
-												}/>
+												}>{topic.Topic}</Button>
 						    					{this.renderMedia(topic)}
 				    					</View>
 				    				)}

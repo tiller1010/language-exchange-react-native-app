@@ -1,7 +1,8 @@
 import React from 'react';
 import axios from 'axios';
-import { Text, View, TextInput, Button, Image, ScrollView } from 'react-native';
+import { Text, View, TextInput, Button as TextButton, Image, ScrollView } from 'react-native';
 import Styles from './Styles.js';
+import { Button, RadioButton, Searchbar, Menu } from 'react-native-paper';
 
 class Level extends React.Component {
 	constructor(){
@@ -73,9 +74,9 @@ class Level extends React.Component {
 			    {this.state.topics ?
 			    	this.state.topics.map((topic) => 
 			    		<View key={topic.id} style={{...Styles.flex, ...Styles.column, ...Styles.fullWidth, ...Styles.xCenter}}>			    		
-	    					<Button title={topic.Topic} onPress={() =>
+	    					<Button icon="arrow-right" mode="outlined" contentStyle={{flexDirection: 'row-reverse'}} onPress={() =>
 								this.props.navigation.navigate('Topic', {levelID: this.state.levelID, topicID: topic.id})
-							}/>
+							}>{topic.Topic}</Button>
 							{this.renderMedia(topic)}
 				    		{topic.challenges ?
 								<ScrollView horizontal>

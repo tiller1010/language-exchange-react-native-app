@@ -3,8 +3,7 @@ import { Text, View, TextInput, Image, Button as TextButton, ScrollView } from '
 import { Video } from 'expo-av';
 import { parse as URLParse } from 'search-params';
 import Styles from './Styles.js';
-import { RadioButton } from 'react-native-paper';
-import { Button } from 'react-native-paper';
+import { Button, RadioButton, Searchbar, Menu } from 'react-native-paper';
 
 async function getVideos(url=`${process.env.APP_SERVER_URL}/videos.json`){
 
@@ -93,7 +92,7 @@ class VideosIndex extends React.Component {
 	}
 
 	toggleSortControls(){
-		let newStatus = this.state.sortControlStatus ? '' : 'open';
+		let newStatus = this.state.sortControlStatus ? '' : 'visible';
 		this.setState({
 			sortControlStatus: newStatus
 		});
@@ -101,7 +100,8 @@ class VideosIndex extends React.Component {
 
 	handleSortChange(value){
 		this.setState({
-			sort: value
+			sort: value,
+			sortControlStatus: ''
 		}, () => {
 			this.handleSearch(`${process.env.APP_SERVER_URL}/videos.json?keywords=${this.state.keywords}&sort=${this.state.sort}`);
 		});
@@ -121,88 +121,88 @@ class VideosIndex extends React.Component {
 		var keywords = this.state.keywords;
 
 		return (
-			<ScrollView>			
-				<Text style={Styles.heading}>Videos</Text>
-				<Button icon="refresh" onPress={
-					() => {
-						this.setState({keywords: ''});
-						this.handleChangePage(`${apiBaseURL}/videos.json?page=${this.state.currentPage}`);
-					}
-				}/>
-				<View>
+			<ScrollView>		
+				<View style={Styles.pad}>	
+					<Text style={Styles.heading}>Videos</Text>
+					<Button icon="refresh" onPress={
+						() => {
+							this.setState({keywords: ''});
+							this.handleChangePage(`${apiBaseURL}/videos.json?page=${this.state.currentPage}`);
+						}
+					}/>
 					<Text style={Styles.subHeading}>Search Terms</Text>
-					<TextInput type="text" onChangeText={(text) => this.setState({keywords: text})} value={this.state.keywords}
+					<Searchbar type="text" onChangeText={(text) => this.setState({keywords: text})} value={this.state.keywords}
 						style={{
 							borderWidth: 1,
 							borderColor: 'black'
 						}}
 					/>
-					<Button icon="magnify" onPress={() => this.handleSearch(`${apiBaseURL}/videos.json?keywords=${this.state.keywords}`)}/>
-				</View>
-					<View style={Styles.flex}>
-							{/*<FontAwesomeIcon icon={faSlidersH}/>*/}
-						<Button onPress={this.toggleSortControls}
-							icon="tune"
-						/>
-						<View>
-							<View>
-								<Text>All</Text>
-								<RadioButton name="sort" value="" status={this.state.sort === '' ? 'checked' : 'unchecked'} onPress={() => this.handleSortChange('')}/>
-							</View>
-							<View>
-								<Text>Oldest</Text>
-								<RadioButton name="sort" value="Oldest" status={this.state.sort === 'Oldest' ? 'checked' : 'unchecked'} onPress={() => this.handleSortChange('Oldest')}/>
-							</View>
-							<View>
-								<Text>Recent</Text>
-								<RadioButton name="sort" value="Recent" status={this.state.sort === 'Recent' ? 'checked' : 'unchecked'} onPress={() => this.handleSortChange('Recent')}/>
-							</View>
-							<View>
-								<Text>A-Z</Text>
-								<RadioButton name="sort" value="A-Z" status={this.state.sort === 'A-Z' ? 'checked' : 'unchecked'} onPress={() => this.handleSortChange('A-Z')}/>
-							</View>
-							<View>
-								<Text>Z-A</Text>
-								<RadioButton name="sort" value="Z-A" status={this.state.sort === 'Z-A' ? 'checked' : 'unchecked'} onPress={() => this.handleSortChange('Z-A')}/>
-							</View>
+					<View style={{...Styles.flex, ...Styles.xCenter}}>
+						<View style={Styles.pad}>
+							<Menu
+								anchor={<Button onPress={this.toggleSortControls} icon="tune" mode="contained" labelStyle={{color: 'white'}}>Search & Sort</Button>}
+								visible={this.state.sortControlStatus}
+							>
+								<RadioButton.Group>
+									<RadioButton.Item label="All" name="sort" value="" status={this.state.sort === '' ? 'checked' : 'unchecked'} onPress={() => this.handleSortChange('')}/>
+									<RadioButton.Item label="Oldest" name="sort" value="Oldest" status={this.state.sort === 'Oldest' ? 'checked' : 'unchecked'} onPress={() => this.handleSortChange('Oldest')}/>
+									<RadioButton.Item label="Recent" name="sort" value="Recent" status={this.state.sort === 'Recent' ? 'checked' : 'unchecked'} onPress={() => this.handleSortChange('Recent')}/>
+									<RadioButton.Item label="A-Z" name="sort" value="A-Z" status={this.state.sort === 'A-Z' ? 'checked' : 'unchecked'} onPress={() => this.handleSortChange('A-Z')}/>
+									<RadioButton.Item label="Z-A" name="sort" value="Z-A" status={this.state.sort === 'Z-A' ? 'checked' : 'unchecked'} onPress={() => this.handleSortChange('Z-A')}/>
+								</RadioButton.Group>
+								<Menu.Item icon="close" title="Close" onPress={this.toggleSortControls}/>
+							</Menu>
+						</View>
+						<View style={Styles.pad}>
+							<Button icon="magnify" mode="contained" labelStyle={{color: 'white'}} onPress={() =>
+								this.handleSearch(`${apiBaseURL}/videos.json?keywords=${this.state.keywords}`)
+							}>Search</Button>
 						</View>
 					</View>
-			    <View>
-				    <TextButton title="Clear filters" onPress={
-						() => {
-							this.setState({keywords: ''});
-							this.handleChangePage(`${apiBaseURL}/videos.json`);
-						}
-				    }/>
-			    </View>
-			    <View>
-				    <TextButton title="Add a video" onPress={() => 
-				    	this.props.navigation.navigate('VideosAdd')
-				    }/>
+				    <View>
+					    <TextButton title="Clear filters" onPress={
+							() => {
+								this.setState({keywords: ''});
+								this.handleChangePage(`${apiBaseURL}/videos.json`);
+							}
+					    }/>
+				    </View>
+				    <View>
+					    <TextButton title="Add a video" onPress={() => 
+					    	this.props.navigation.navigate('VideosAdd')
+					    }/>
+				    </View>
 			    </View>
 				<View>
 					{this.state.pages.length ?
-						<View style={Styles.flex}>
+						<ScrollView horizontal>
 							{this.state.currentPage > 1 ?
 								<View>
-									<TextButton title="Prev" onPress={() => this.handleChangePage(`${apiBaseURL}/videos.json?${keywords ? 'keywords=' + keywords + '&' : ''}page=${Number(this.state.currentPage) - 1}`)}/>
+									<Button mode="outlined" icon="arrow-left" onPress={() => this.handleChangePage(`${apiBaseURL}/videos.json?${keywords ? 'keywords=' + keywords + '&' : ''}page=${Number(this.state.currentPage) - 1}`)}>
+										Prev
+									</Button>
 								</View>
 								:
 								<Text></Text>
 							}
 							{this.state.pages.map((page) =>
 								<View key={this.state.pages.indexOf(page)}>
-									<TextButton title={`${page.pageNumber}`} onPress={() => this.handleChangePage(`${apiBaseURL}/videos.json?${keywords ? 'keywords=' + keywords + '&' : ''}page=${page.pageNumber}`)}/>
+									<Button mode={this.state.pages.indexOf(page) + 1 == this.state.currentPage ? 'contained' : 'outlined'}
+										onPress={() => this.handleChangePage(`${apiBaseURL}/videos.json?${keywords ? 'keywords=' + keywords + '&' : ''}page=${page.pageNumber}`)}>
+										{page.pageNumber}
+									</Button>
 								</View>
 							)}
 							{this.state.currentPage < this.state.pages.length ?
 								<View>
-									<TextButton title="Next" onPress={() => this.handleChangePage(`${apiBaseURL}/videos.json?${keywords ? 'keywords=' + keywords + '&' : ''}page=${Number(this.state.currentPage) + 1}`)}/>
+									<Button mode="outlined" icon="arrow-right" contentStyle={{flexDirection: 'row-reverse'}} onPress={() => this.handleChangePage(`${apiBaseURL}/videos.json?${keywords ? 'keywords=' + keywords + '&' : ''}page=${Number(this.state.currentPage) + 1}`)}>
+										Next
+									</Button>
 								</View>
 								:
 								<Text></Text>
 							}
-						</View>
+						</ScrollView>
 						:
 						<Text></Text>
 					}
@@ -241,27 +241,34 @@ class VideosIndex extends React.Component {
 						<Text>No videos</Text>
 					}
 					{this.state.pages.length ?
-						<View style={Styles.flex}>
+						<ScrollView horizontal>
 							{this.state.currentPage > 1 ?
 								<View>
-									<TextButton title="Prev" onPress={() => this.handleChangePage(`${apiBaseURL}/videos.json?${keywords ? 'keywords=' + keywords + '&' : ''}page=${Number(this.state.currentPage) - 1}`)}/>
+									<Button mode="outlined" icon="arrow-left" onPress={() => this.handleChangePage(`${apiBaseURL}/videos.json?${keywords ? 'keywords=' + keywords + '&' : ''}page=${Number(this.state.currentPage) - 1}`)}>
+										Prev
+									</Button>
 								</View>
 								:
 								<Text></Text>
 							}
 							{this.state.pages.map((page) =>
 								<View key={this.state.pages.indexOf(page)}>
-									<TextButton title={`${page.pageNumber}`} onPress={() => this.handleChangePage(`${apiBaseURL}/videos.json?${keywords ? 'keywords=' + keywords + '&' : ''}page=${page.pageNumber}`)}/>
+									<Button mode={this.state.pages.indexOf(page) + 1 == this.state.currentPage ? 'contained' : 'outlined'}
+										onPress={() => this.handleChangePage(`${apiBaseURL}/videos.json?${keywords ? 'keywords=' + keywords + '&' : ''}page=${page.pageNumber}`)}>
+										{page.pageNumber}
+									</Button>
 								</View>
 							)}
 							{this.state.currentPage < this.state.pages.length ?
 								<View>
-									<TextButton title="Next" onPress={() => this.handleChangePage(`${apiBaseURL}/videos.json?${keywords ? 'keywords=' + keywords + '&' : ''}page=${Number(this.state.currentPage) + 1}`)}/>
+									<Button mode="outlined" icon="arrow-right" contentStyle={{flexDirection: 'row-reverse'}} onPress={() => this.handleChangePage(`${apiBaseURL}/videos.json?${keywords ? 'keywords=' + keywords + '&' : ''}page=${Number(this.state.currentPage) + 1}`)}>
+										Next
+									</Button>
 								</View>
 								:
 								<Text></Text>
 							}
-						</View>
+						</ScrollView>
 						:
 						<Text></Text>
 					}
