@@ -124,21 +124,14 @@ class VideosIndex extends React.Component {
 			<ScrollView>		
 				<View style={Styles.pad}>	
 					<Text style={Styles.heading}>Videos</Text>
-					<Button icon="refresh" onPress={
-						() => {
-							this.setState({keywords: ''});
-							this.handleChangePage(`${apiBaseURL}/videos.json?page=${this.state.currentPage}`);
-						}
-					}/>
-					<Text style={Styles.subHeading}>Search Terms</Text>
-					<Searchbar type="text" onChangeText={(text) => this.setState({keywords: text})} value={this.state.keywords}
+					<Searchbar type="text" placeholder="Search video submissions" onChangeText={(text) => this.setState({keywords: text})} value={this.state.keywords}
 						style={{
 							borderWidth: 1,
 							borderColor: 'black'
 						}}
 					/>
 					<View style={{...Styles.flex, ...Styles.xCenter}}>
-						<View style={Styles.pad}>
+						<View style={Styles.halfPad}>
 							<Menu
 								anchor={<Button onPress={this.toggleSortControls} icon="tune" mode="contained" labelStyle={{color: 'white'}}>Search & Sort</Button>}
 								visible={this.state.sortControlStatus}
@@ -153,19 +146,29 @@ class VideosIndex extends React.Component {
 								<Menu.Item icon="close" title="Close" onPress={this.toggleSortControls}/>
 							</Menu>
 						</View>
-						<View style={Styles.pad}>
+						<View style={Styles.halfPad}>
 							<Button icon="magnify" mode="contained" labelStyle={{color: 'white'}} onPress={() =>
 								this.handleSearch(`${apiBaseURL}/videos.json?keywords=${this.state.keywords}`)
-							}>Search</Button>
+							}>Search Videos</Button>
 						</View>
 					</View>
-				    <View>
-					    <TextButton title="Clear filters" onPress={
-							() => {
-								this.setState({keywords: ''});
-								this.handleChangePage(`${apiBaseURL}/videos.json`);
-							}
-					    }/>
+				    <View style={{...Styles.flex, ...Styles.xCenter}}>
+					    <View style={Styles.halfPad}>
+							<Button icon="refresh" mode="outlined" contentStyle={{flexDirection: 'row-reverse'}} onPress={
+								() => {
+									this.setState({keywords: ''});
+									this.handleChangePage(`${apiBaseURL}/videos.json?page=${this.state.currentPage}`);
+								}
+							}>Refresh</Button>
+					    </View>
+					    <View style={Styles.halfPad}>
+						    <Button icon="cancel" mode="outlined" contentStyle={{flexDirection: 'row-reverse'}} onPress={
+								() => {
+									this.setState({keywords: ''});
+									this.handleChangePage(`${apiBaseURL}/videos.json`);
+								}
+						    }>Clear filters</Button>
+					    </View>
 				    </View>
 				    <View>
 					    <TextButton title="Add a video" onPress={() => 
@@ -188,6 +191,7 @@ class VideosIndex extends React.Component {
 							{this.state.pages.map((page) =>
 								<View key={this.state.pages.indexOf(page)}>
 									<Button mode={this.state.pages.indexOf(page) + 1 == this.state.currentPage ? 'contained' : 'outlined'}
+										labelStyle={this.state.pages.indexOf(page) + 1 == this.state.currentPage ? {color: 'white'} : {}}
 										onPress={() => this.handleChangePage(`${apiBaseURL}/videos.json?${keywords ? 'keywords=' + keywords + '&' : ''}page=${page.pageNumber}`)}>
 										{page.pageNumber}
 									</Button>
@@ -254,6 +258,7 @@ class VideosIndex extends React.Component {
 							{this.state.pages.map((page) =>
 								<View key={this.state.pages.indexOf(page)}>
 									<Button mode={this.state.pages.indexOf(page) + 1 == this.state.currentPage ? 'contained' : 'outlined'}
+										labelStyle={this.state.pages.indexOf(page) + 1 == this.state.currentPage ? {color: 'white'} : {}}
 										onPress={() => this.handleChangePage(`${apiBaseURL}/videos.json?${keywords ? 'keywords=' + keywords + '&' : ''}page=${page.pageNumber}`)}>
 										{page.pageNumber}
 									</Button>

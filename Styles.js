@@ -21,6 +21,17 @@ export default Styles = StyleSheet.create({
 	pad: {
 		padding: 20
 	},
+	halfPad: {
+		padding: 10
+	},
+	noXPad: {
+		paddingLeft: 0,
+		paddingRight: 0
+	},
+	noYPad: {
+		paddingTop: 0,
+		paddingBottom: 0
+	},
 	flex: {
 		flex: 1,
 		flexDirection: 'row'

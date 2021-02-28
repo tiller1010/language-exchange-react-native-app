@@ -92,15 +92,14 @@ class Home extends React.Component {
 					<Text>Let's enjoy your</Text>
 					<Text style={Styles.heading}>User Submissions</Text>
 					<View>
-						<Text style={Styles.subHeading}>Search video submissions</Text>
-						<Searchbar type="text" onChangeText={(text) => this.setState({keywords: text})} value={this.state.keywords}
+						<Searchbar type="text" placeholder="Search video submissions" onChangeText={(text) => this.setState({keywords: text})} value={this.state.keywords}
 							style={{
 								borderWidth: 1,
 								borderColor: 'black'
 							}}
 						/>
 						<View style={{...Styles.flex, ...Styles.xCenter}}>
-							<View style={Styles.pad}>
+							<View style={Styles.halfPad}>
 								<Menu
 									anchor={<Button onPress={this.toggleSortControls} icon="tune" mode="contained" labelStyle={{color: 'white'}}>Search & Sort</Button>}
 									visible={this.state.sortControlStatus}
@@ -115,10 +114,10 @@ class Home extends React.Component {
 									<Menu.Item icon="close" title="Close" onPress={this.toggleSortControls}/>
 								</Menu>
 							</View>
-							<View style={Styles.pad}>
+							<View style={Styles.halfPad}>
 								<Button icon="magnify" mode="contained" labelStyle={{color: 'white'}} onPress={() =>
 									this.props.navigation.navigate('VideosIndex', {keywords: this.state.keywords})
-								}>Search</Button>
+								}>Search Videos</Button>
 							</View>
 						</View>
 					</View>
@@ -127,11 +126,11 @@ class Home extends React.Component {
 					}/>
 				</View>
 
-				<ScrollView horizontal contentContainerStyle={{ width: 2000 }}>
+				<ScrollView horizontal contentContainerStyle={{ width: 1500 }}>
 			    	{this.state.recentVideos.map((video) => 
-			    		<View key={video._id} style={{height: 300, width: 400}}>
+			    		<View key={video._id} style={{height: 300, width: 300}}>
 				    		<View style={{...Styles.pad}}>
-								<Text>{video.title}</Text>
+								<Text style={Styles.subHeading}>{video.title}</Text>
 								<Video
 									posterSource={{uri: video.thumbnailSrc ? apiBaseURL + '/' + video.thumbnailSrc : apiBaseURL + '/images/videoPlaceholder.png'}}
 									ref={(ref) => {
@@ -144,7 +143,7 @@ class Home extends React.Component {
 												});
 										}
 									}}
-									style={{height: 225, width: '100%'}}
+									style={{height: 225, width: '100%', borderRadius: 25, overflow: 'hidden'}}
 									usePoster={true}
 									useNativeControls={true}
 									// overrideFileExtensionAndroid="mp4"

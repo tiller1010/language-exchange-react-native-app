@@ -1,8 +1,9 @@
 import React from 'react';
 import axios from 'axios';
-import { Text, View, TextInput, Button, Image, ScrollView } from 'react-native';
+import { Text, View, Button as TextButton, Image, ScrollView } from 'react-native';
 import { Video } from 'expo-av';
 import Styles from './Styles.js';
+import { Button, TextInput } from 'react-native-paper';
 
 class Topic extends React.Component {
 	constructor(){
@@ -81,26 +82,34 @@ class Topic extends React.Component {
 	render(){
 		return (
 			<ScrollView>
-				<Text style={Styles.heading}>{this.state.topic}</Text>
+				<View style={Styles.pad}>
+					<Text style={Styles.heading}>{this.state.topic}</Text>
+				</View>
 			    {this.state.challenges ?
 			    	<View style={{...Styles.flex, ...Styles.column, ...Styles.fullWidth, ...Styles.xCenter}}>
 				    	{this.state.challenges.map((challenge) => 
 				    		<View key={challenge.id} style={{...Styles.flex, ...Styles.column, ...Styles.fullWidth, ...Styles.xCenter}}>
 					    		<View>
-					    			<Text style={Styles.subHeading}>{challenge.Title}</Text>
-					    			<Text>{challenge.Content}</Text>
+						    		<View style={Styles.pad}>
+						    			<Text style={Styles.subHeading}>{challenge.Title}</Text>
+						    			<Text>{challenge.Content}</Text>
+					    			</View>
 					    			{challenge.FeaturedMedia.length ?
 					    				this.renderMedia(challenge)
 					    				:
 					    				<Text></Text>
 					    			}
-					    			<View style={{...Styles.flex, ...Styles.xSpaceBetween}}>
-										<Button title="View others" onPress={() => 
-									    	this.props.navigation.navigate('VideosIndex', {keywords: challenge.Title})
-									    }/>
-										<Button title="Submit your own" onPress={() => 
-									    	this.props.navigation.navigate('VideosAdd', {challenge: challenge.Title})
-									    }/>
+					    			<View style={{...Styles.flex, ...Styles.xCenter}}>
+						    			<View style={Styles.halfPad}>
+											<Button icon="magnify" mode="contained" labelStyle={{color: 'white'}} contentStyle={{flexDirection: 'row-reverse'}} onPress={() => 
+										    	this.props.navigation.navigate('VideosIndex', {keywords: challenge.Title})
+										    }>View others</Button>
+							    		</View>
+						    			<View style={Styles.halfPad}>
+											<Button icon="plus" mode="contained" labelStyle={{color: 'white'}} contentStyle={{flexDirection: 'row-reverse'}} onPress={() => 
+										    	this.props.navigation.navigate('VideosAdd', {challenge: challenge.Title})
+										    }>Submit your own</Button>
+							    		</View>
 						    		</View>
 					    		</View>
 				    		</View>

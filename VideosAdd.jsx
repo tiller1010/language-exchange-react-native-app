@@ -1,7 +1,8 @@
 import React from 'react';
-import { ImageBackground, Text, View, TextInput, Button, Image, ScrollView, Alert } from 'react-native';
+import { ImageBackground, Text, View, Button as TextButton, Image, ScrollView, Alert } from 'react-native';
 import { Video } from 'expo-av';
 import * as ImagePicker from 'expo-image-picker';
+import { Button, TextInput } from 'react-native-paper';
 
 function createFormData(title, video, thumbnail){
   const data = new FormData();
@@ -130,26 +131,30 @@ class VideosAdd extends React.Component {
 
 		return (
 			<ScrollView>
-				<Text style={Styles.heading}>Video Add</Text>
-				<View>
-					<Text style={Styles.subHeading}>Title:</Text>
-					<TextInput type="text" onChangeText={(text) => this.handleTextChange(text)} defaultValue={this.state.title} required
-						style={{
-							borderWidth: 1,
-							borderColor: 'black'
-						}}
-					/>
-					<View style={{display: 'flex'}}>
-						<Button title="Upload Video" onPress={this.handleVideoUploadChange} required/>
+				<View style={Styles.pad}>
+					<Text style={Styles.heading}>Video Add</Text>
+					<TextInput label="Title" mode="outlined" onChangeText={(text) => this.handleTextChange(text)} value={this.state.title} required/>
+					<View style={{...Styles.halfPad, ...Styles.noXPad}}>
+						<Button icon="upload" mode="contained" labelStyle={{color: 'white'}} contentStyle={{flexDirection: 'row-reverse'}} onPress={this.handleVideoUploadChange} required>
+							Upload Video
+						</Button>
 					</View>
-					<View style={{display: 'flex'}}>
-						<Button title="Upload Thumbnail" onPress={this.handleThumbnailUploadChange} required/>
+					<View style={{...Styles.halfPad, ...Styles.noXPad}}>
+						<Button icon="upload" mode="contained" labelStyle={{color: 'white'}} contentStyle={{flexDirection: 'row-reverse'}} onPress={this.handleThumbnailUploadChange} required>
+							Upload Thumbnail
+						</Button>
 					</View>
-					<Button title="Submit" onPress={this.handleSubmit}/>
+					<View style={{...Styles.halfPad, ...Styles.noXPad}}>
+						<Button icon="plus" mode="contained" labelStyle={{color: 'white'}} contentStyle={{flexDirection: 'row-reverse'}} onPress={this.handleSubmit}>
+							Submit
+						</Button>
+					</View>
 				</View>
 				<View>
 					<View>
-						<Text style={Styles.subHeading}>Video Preview</Text>
+						<View style={Styles.pad}>
+							<Text style={Styles.subHeading}>Video Preview</Text>
+						</View>
 						<Video
 							source={this.state.video}
 							ref={(ref) => {
@@ -161,7 +166,9 @@ class VideosAdd extends React.Component {
 						/>
 					</View>
 					<View>
-						<Text style={Styles.subHeading}>Thumbnail Preview</Text>
+						<View style={Styles.pad}>
+							<Text style={Styles.subHeading}>Thumbnail Preview</Text>
+						</View>
 						<ImageBackground source={this.state.thumbnail} style={{height: 225, width: '100%'}}></ImageBackground>
 					</View>
 				</View>
