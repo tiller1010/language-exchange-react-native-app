@@ -121,9 +121,6 @@ class Home extends React.Component {
 							</View>
 						</View>
 					</View>
-				    <Button icon="play-circle" onPress={() =>
-						this.props.navigation.navigate('VideosIndex')
-					}/>
 				</View>
 
 				<ScrollView horizontal contentContainerStyle={{ width: 1500 }}>

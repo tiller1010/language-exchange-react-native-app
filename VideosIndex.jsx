@@ -170,11 +170,6 @@ class VideosIndex extends React.Component {
 						    }>Clear filters</Button>
 					    </View>
 				    </View>
-				    <View>
-					    <TextButton title="Add a video" onPress={() => 
-					    	this.props.navigation.navigate('VideosAdd')
-					    }/>
-				    </View>
 			    </View>
 				<View>
 					{this.state.pages.length ?
