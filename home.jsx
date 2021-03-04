@@ -97,6 +97,8 @@ class Home extends React.Component {
 								borderWidth: 1,
 								borderColor: 'black'
 							}}
+							onIconPress={() => this.props.navigation.navigate('VideosIndex', {keywords: this.state.keywords})}
+							onSubmitEditing={() => this.props.navigation.navigate('VideosIndex', {keywords: this.state.keywords})}
 						/>
 						<View style={{...Styles.flex, ...Styles.xCenter}}>
 							<View style={Styles.halfPad}>
@@ -123,6 +125,9 @@ class Home extends React.Component {
 					</View>
 				</View>
 
+				<View style={Styles.pad}>
+					<Text style={Styles.subHeading}>Recent Submissions</Text>
+				</View>
 				<ScrollView horizontal contentContainerStyle={{ width: 1500 }}>
 			    	{this.state.recentVideos.map((video) => 
 			    		<View key={video._id} style={{height: 300, width: 300}}>
@@ -169,12 +174,12 @@ class Home extends React.Component {
 				    				)}
 			    				</View>
 			    				:
-			    				<Text>No topics</Text>
+			    				<Text>Loading</Text>
 				    		}
 			    		</View>
 		    		) 
 			    	:
-			    	<Text>No levels</Text>
+			    	<Text>Loading</Text>
 			    }
 			</ScrollView>
 		);

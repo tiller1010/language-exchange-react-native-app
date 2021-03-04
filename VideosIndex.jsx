@@ -129,6 +129,8 @@ class VideosIndex extends React.Component {
 							borderWidth: 1,
 							borderColor: 'black'
 						}}
+						onIconPress={() => this.handleSearch(`${apiBaseURL}/videos.json?keywords=${this.state.keywords}`)}
+						onSubmitEditing={() => this.handleSearch(`${apiBaseURL}/videos.json?keywords=${this.state.keywords}`)}
 					/>
 					<View style={{...Styles.flex, ...Styles.xCenter}}>
 						<View style={Styles.halfPad}>
@@ -237,7 +239,7 @@ class VideosIndex extends React.Component {
 							)}
 						</View>
 						:
-						<Text>No videos</Text>
+						<Text>Loading</Text>
 					}
 					{this.state.pages.length ?
 						<ScrollView horizontal>
