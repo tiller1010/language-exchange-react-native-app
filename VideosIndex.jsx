@@ -31,6 +31,7 @@ class VideosIndex extends React.Component {
 		this.handleSearch = this.handleSearch.bind(this);
 		this.toggleSortControls = this.toggleSortControls.bind(this);
 		this.handleSortChange = this.handleSortChange.bind(this);
+		this.handleUserProfileNavigation = this.handleUserProfileNavigation.bind(this);
 	}
 
 	async componentDidMount(){
@@ -113,6 +114,14 @@ class VideosIndex extends React.Component {
 			pageLinks.push({pageNumber: i});
 		}
 		return pageLinks;
+	}
+
+	async handleUserProfileNavigation(userID){
+		let user = await fetch(`${process.env.APP_SERVER_URL}/user/${userID}`)
+			.then((response) => response.json())
+			.catch((e) => console.log(e));
+			console.log(user)
+		this.props.navigation.navigate('Account Profile', { user });
 	}
 
 	render(){
@@ -211,7 +220,18 @@ class VideosIndex extends React.Component {
 						<View>
 							{this.state.videos.map((video) => 
 								<View key={video._id}>
-									<Text style={Styles.subHeading}>{video.title}</Text>
+									<View style={{...Styles.flex, ...Styles.xSpaceBetween, ...Styles.yCenter}}>
+										<Text style={Styles.subHeading}>{video.title}</Text>
+										{video.uploadedBy._id ?
+											<View>
+												<TextButton title={`By: ${video.uploadedBy.displayName}`} onPress={() => this.handleUserProfileNavigation(video.uploadedBy._id)}/>
+											</View>
+											:
+											<View>
+												<Text>By: {video.uploadedBy.displayName}</Text>
+											</View>
+										}
+									</View>
 									{video.src ?
 										<View>
 											<Video

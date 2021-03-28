@@ -51,7 +51,7 @@ class Home extends React.Component {
 			sort: value,
 			sortControlStatus: ''
 		}, () => {
-			this.props.navigation.navigate('VideosIndex', {sort: this.state.sort, keywords: this.state.keywords || ''});
+			this.props.navigation.navigate('Videos', {sort: this.state.sort, keywords: this.state.keywords || ''});
 		});
 	}
 
@@ -97,8 +97,8 @@ class Home extends React.Component {
 								borderWidth: 1,
 								borderColor: 'black'
 							}}
-							onIconPress={() => this.props.navigation.navigate('VideosIndex', {keywords: this.state.keywords})}
-							onSubmitEditing={() => this.props.navigation.navigate('VideosIndex', {keywords: this.state.keywords})}
+							onIconPress={() => this.props.navigation.navigate('Videos', {keywords: this.state.keywords})}
+							onSubmitEditing={() => this.props.navigation.navigate('Videos', {keywords: this.state.keywords})}
 						/>
 						<View style={{...Styles.flex, ...Styles.xCenter}}>
 							<View style={Styles.halfPad}>
@@ -118,7 +118,7 @@ class Home extends React.Component {
 							</View>
 							<View style={Styles.halfPad}>
 								<Button icon="magnify" mode="contained" labelStyle={{color: 'white'}} onPress={() =>
-									this.props.navigation.navigate('VideosIndex', {keywords: this.state.keywords})
+									this.props.navigation.navigate('Videos', {keywords: this.state.keywords})
 								}>Search Videos</Button>
 							</View>
 						</View>

@@ -1,8 +1,6 @@
 import React from 'react';
 import { BottomNavigation } from 'react-native-paper';
-import HomeStackScreen from './HomeStackScreen.jsx';
-import VideosIndex from './VideosIndex.jsx';
-import VideosAdd from './VideosAdd.jsx';
+import AppStackScreen from './AppStackScreen.jsx';
 
 class Navigation extends React.Component {
 	constructor(props){
@@ -12,7 +10,8 @@ class Navigation extends React.Component {
 		    routes: [
 				{key: 'Home', title: 'Home', icon: 'home'},
 				{key: 'VideosIndex', title: 'Videos', icon: 'play'},
-				{key: 'VideosAdd', title: 'Add Video', icon: 'plus'}
+				{key: 'VideosAdd', title: 'Add Video', icon: 'plus'},
+				{key: 'AccountProfile', title: 'Account Profile', icon: 'account'}
 			]
 		}
 		this.handleIndexChange = this.handleIndexChange.bind(this);
@@ -27,11 +26,28 @@ class Navigation extends React.Component {
 			<BottomNavigation
 				navigationState={this.state}
 		        onIndexChange={this.handleIndexChange}
-				renderScene={BottomNavigation.SceneMap({
-					Home: HomeStackScreen,
-					VideosIndex: VideosIndex,
-					VideosAdd: VideosAdd
-				})}
+				renderScene = {({ route, jumpTo }) => {
+				  switch (route.key) {
+				    case 'Home':
+				      return <AppStackScreen initialRouteName="Home" jumpTo={jumpTo} />;
+				    break;
+				    case 'VideosIndex':
+				      return <AppStackScreen initialRouteName="Videos" jumpTo={jumpTo} />;
+				    break;
+				    case 'VideosAdd':
+				      return <AppStackScreen initialRouteName="Add Video" jumpTo={jumpTo} />;
+				    break;
+				    case 'Login':
+				      return <AppStackScreen initialRouteName="Login" jumpTo={jumpTo} />;
+				    break;
+				    case 'Register':
+				      return <AppStackScreen initialRouteName="Register" jumpTo={jumpTo} />;
+				    break;
+				    case 'AccountProfile':
+				      return <AppStackScreen initialRouteName="Account Profile" jumpTo={jumpTo} />;
+				    break;
+				  }
+				}}
 				inactiveColor="white"
 				activeColor="black"
 			/>

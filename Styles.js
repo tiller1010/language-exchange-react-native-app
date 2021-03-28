@@ -48,6 +48,9 @@ export default Styles = StyleSheet.create({
 	xSpaceBetween: {
 		justifyContent: 'space-between'
 	},
+	xSpaceAround: {
+		justifyContent: 'space-around'
+	},
 	yCenter: {
 		alignItems: 'center'
 	},

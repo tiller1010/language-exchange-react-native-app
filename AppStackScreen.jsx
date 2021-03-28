@@ -6,25 +6,28 @@ import VideosIndex from './VideosIndex.jsx';
 import VideosAdd from './VideosAdd.jsx';
 import Level from './Level.jsx';
 import Topic from './Topic.jsx';
+import Login from './Login.jsx';
+import Register from './Register.jsx';
+import AccountProfile from './AccountProfile.jsx';
 
 const Stack = createStackNavigator();
 
-class HomeStackScreen extends React.Component {
+class AppStackScreen extends React.Component {
 
     render(){
         return(
             <NavigationContainer>
-                <Stack.Navigator>
+                <Stack.Navigator initialRouteName={this.props.initialRouteName}>
                   <Stack.Screen
                     name="Home"
                     component={Home}
                   />
                   <Stack.Screen
-                    name="VideosIndex"
+                    name="Videos"
                     component={VideosIndex}
                   />
                   <Stack.Screen
-                    name="VideosAdd"
+                    name="Add Video"
                     component={VideosAdd}
                   />
                   <Stack.Screen
@@ -35,10 +38,22 @@ class HomeStackScreen extends React.Component {
                     name="Topic"
                     component={Topic}
                   />
+                  <Stack.Screen
+                    name="Login"
+                    component={Login}
+                  />
+                  <Stack.Screen
+                    name="Register"
+                    component={Register}
+                  />
+                  <Stack.Screen
+                    name="Account Profile"
+                    component={AccountProfile}
+                  />
                 </Stack.Navigator>
             </NavigationContainer>
         );
     }
 }
 
-export default HomeStackScreen;
+export default AppStackScreen;
