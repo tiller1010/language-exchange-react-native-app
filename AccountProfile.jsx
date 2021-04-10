@@ -24,17 +24,21 @@ class AccountProfile extends React.Component {
 
 	async componentDidMount(){
 		if(!this.state.user){
-			var userProfile = null;
+			var userProfile = { _id: null };
 			if(this.props.route.params){
 				if(this.props.route.params.user){
 					userProfile = this.props.route.params.user;
 				}
 			}
 			var authenticatedUser = await AsyncStorage.getItem('@user');
-			authenticatedUser = JSON.parse(authenticatedUser);
-			if(userProfile._id == authenticatedUser._id){
+			if(authenticatedUser){
+				authenticatedUser = JSON.parse(authenticatedUser);
+			} else {
+				authenticatedUser = { _id: null };
+			}
+			if(userProfile._id == authenticatedUser._id && userProfile._id && authenticatedUser._id){
 				this.findAndSyncUser(userProfile, authenticatedUser);
-			} else if(userProfile){
+			} else if(userProfile._id){
 				this.setState({ user: userProfile });
 			} else {
 				this.props.navigation.navigate('Login');
@@ -44,17 +48,21 @@ class AccountProfile extends React.Component {
 
 	async componentDidUpdate(){
 		if(!this.state.user){
-			var userProfile = null;
+			var userProfile = { _id: null };
 			if(this.props.route.params){
 				if(this.props.route.params.user){
 					userProfile = this.props.route.params.user;
 				}
 			}
 			var authenticatedUser = await AsyncStorage.getItem('@user');
-			authenticatedUser = JSON.parse(authenticatedUser);
-			if(userProfile._id == authenticatedUser._id){
+			if(authenticatedUser){
+				authenticatedUser = JSON.parse(authenticatedUser);
+			} else {
+				authenticatedUser = { _id: null };
+			}
+			if(userProfile._id == authenticatedUser._id && userProfile._id && authenticatedUser._id){
 				this.findAndSyncUser(userProfile, authenticatedUser);
-			} else if(userProfile){
+			} else if(userProfile._id){
 				this.setState({ user: userProfile });
 			} else {
 				this.props.navigation.navigate('Login');
@@ -182,6 +190,7 @@ class AccountProfile extends React.Component {
 
 	async handleLogout(){
 	    await AsyncStorage.removeItem('@user');
+	    await fetch(`${process.env.APP_SERVER_URL}/logout`);
 		this.setState({
 			user: false,
 			isCurrentUser: false
