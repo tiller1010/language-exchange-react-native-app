@@ -230,7 +230,7 @@ class AccountProfile extends React.Component {
 				{this.state.user ?
 					<View style={Styles.pad}>
 						{this.state.isCurrentUser ?
-							<View style={{...Styles.flex, ...Styles.xSpaceBetween}}>
+							<View>
 								<Text style={Styles.heading}>Welcome, {this.state.user.firstName}!</Text>
 								<Button icon="logout" onPress={this.handleLogout}>
 									Logout
@@ -396,10 +396,17 @@ class AccountProfile extends React.Component {
 						}
 					</View>
 					:
-					<View style={Styles.pad}>
-						<Button icon="arrow-right" contentStyle={{flexDirection: 'row-reverse'}} onPress={() =>
-							this.props.navigation.navigate('Login')
-						}>Login</Button>
+					<View>
+						<View style={Styles.pad}>
+							<Button icon="arrow-right" mode="contained" labelStyle={{color: 'white'}} contentStyle={{flexDirection: 'row-reverse'}} onPress={() =>
+								this.props.navigation.navigate('Login')
+							}>Login</Button>
+						</View>
+						<View style={Styles.pad}>
+							<Button icon="arrow-right" mode="contained" labelStyle={{color: 'white'}} contentStyle={{flexDirection: 'row-reverse'}} onPress={() =>
+								this.props.navigation.navigate('Register')
+							}>Register</Button>
+						</View>
 					</View>
 				}
 			</ScrollView>

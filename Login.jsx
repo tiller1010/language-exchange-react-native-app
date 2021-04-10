@@ -30,13 +30,13 @@ class Login extends React.Component {
 	handleDisplayNameChange(text){
 		this.setState({
 			displayName: text
-		})
+		});
 	}
 
 	handlePasswordChange(text){
 		this.setState({
 			password: text
-		})
+		});
 	}
 
 	async handleSubmit(){
@@ -93,10 +93,7 @@ class Login extends React.Component {
 	render(){
 		return (
 			<ScrollView>
-
 				<View style={Styles.pad}>
-					<Text>Login</Text>
-
 					{this.state.errors.length ?
 						<View className="errors">
 							{this.state.errors.map((error) =>
@@ -108,28 +105,25 @@ class Login extends React.Component {
 						:
 						<Text></Text>
 					}
-					
-					<View action="/login" method="POST" className="flex-col x-end">
-						<View className="small-pad no-x">
+					<View>
+						<View>
 							<TextInput label="Display Name" onChangeText={(text) => this.handleDisplayNameChange(text)} value={this.state.displayName}/>
 						</View>
-						<View className="small-pad no-x">
+						<View>
 							<TextInput label="Password" onChangeText={(text) => this.handlePasswordChange(text)} value={this.state.password} secureTextEntry/>
 						</View>
-						<View className="small-pad no-x">
+						<View>
 						<Button icon="arrow-right" mode="contained" labelStyle={{color: 'white'}} contentStyle={{flexDirection: 'row-reverse'}} onPress={this.handleSubmit}>
 							Login
 						</Button>
 						</View>
 					</View>
-				    <Button href="/register" className="button">
-					    Register
-					    {/*<FontAwesomeIcon icon={faLongArrowAltRight}/>*/}
-				    </Button>
-				    <Button href="/auth/google" className="button">
-					    Login with Google
-					    {/*<FontAwesomeIcon icon={faGoogle}/>*/}
-				    </Button>
+					<Button icon="arrow-right" contentStyle={{flexDirection: 'row-reverse'}} onPress={() =>
+						this.props.navigation.navigate('Register')
+					}>Register</Button>
+					<Button icon="google" contentStyle={{flexDirection: 'row-reverse'}} onPress={() =>
+						this.props.navigation.navigate('Register')
+					}>Login with Google</Button>
 				</View>
 			</ScrollView>
 		);
