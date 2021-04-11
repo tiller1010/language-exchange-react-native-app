@@ -27,26 +27,26 @@ class Navigation extends React.Component {
 				navigationState={this.state}
 		        onIndexChange={this.handleIndexChange}
 				renderScene = {({ route, jumpTo }) => {
-				  switch (route.key) {
-				    case 'Home':
-				      return <AppStackScreen initialRouteName="Home" jumpTo={jumpTo} />;
-				    break;
-				    case 'VideosIndex':
-				      return <AppStackScreen initialRouteName="Videos" jumpTo={jumpTo} />;
-				    break;
-				    case 'VideosAdd':
-				      return <AppStackScreen initialRouteName="Add Video" jumpTo={jumpTo} />;
-				    break;
-				    case 'Login':
-				      return <AppStackScreen initialRouteName="Login" jumpTo={jumpTo} />;
-				    break;
-				    case 'Register':
-				      return <AppStackScreen initialRouteName="Register" jumpTo={jumpTo} />;
-				    break;
-				    case 'AccountProfile':
-				      return <AppStackScreen initialRouteName="Account Profile" jumpTo={jumpTo} />;
-				    break;
-				  }
+					switch (route.key) {
+						case 'Home':
+							return <AppStackScreen initialRouteName="Home" jumpTo={jumpTo} />;
+						break;
+						case 'VideosIndex':
+							return <AppStackScreen initialRouteName="Videos" jumpTo={jumpTo} />;
+						break;
+						case 'VideosAdd':
+							return <AppStackScreen initialRouteName="Add Video" jumpTo={jumpTo} />;
+						break;
+						case 'Login':
+							return <AppStackScreen initialRouteName="Login" jumpTo={jumpTo} />;
+						break;
+						case 'Register':
+							return <AppStackScreen initialRouteName="Register" jumpTo={jumpTo} />;
+						break;
+						case 'AccountProfile':
+							return <AppStackScreen initialRouteName="Account Profile" jumpTo={jumpTo} />;
+						break;
+					}
 				}}
 				inactiveColor="white"
 				activeColor="black"

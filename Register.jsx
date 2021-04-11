@@ -92,7 +92,7 @@ class Register extends React.Component {
 						this.props.navigation.navigate('Account Profile', { user });
 				  	}
 				})
-			  .catch((e) => this.createAlert('Login invalid', true));
+			  .catch((e) => this.createAlert('User with that name already exists', true));
 		} else {
 			this.createAlert('Complete the form before submitting');
 		}

@@ -97,7 +97,6 @@ class VideosAdd extends React.Component {
 				mode: 'no-cors',
 				body: createFormData(state.title, state.video, state.thumbnail)
 			}).then((response) => response)
-			  .then((data) => console.log(data))
 			  .then(this.createAlert('Uploaded Successfully', true))
 			  .catch((e) => console.log(e));
 		} else {
@@ -163,7 +162,6 @@ class VideosAdd extends React.Component {
 								this.player = ref
 							}}
 							style={{height: 225, width: '100%'}}
-							// usePoster={true}
 							useNativeControls={true}
 						/>
 					</View>

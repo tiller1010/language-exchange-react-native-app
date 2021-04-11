@@ -4,6 +4,7 @@ import { Video } from 'expo-av';
 import { parse as URLParse } from 'search-params';
 import Styles from './Styles.js';
 import { Button, RadioButton, Searchbar, Menu } from 'react-native-paper';
+import VideoComponent from './VideoComponent.jsx';
 
 async function getVideos(url=`${process.env.APP_SERVER_URL}/videos.json`){
 
@@ -120,7 +121,6 @@ class VideosIndex extends React.Component {
 		let user = await fetch(`${process.env.APP_SERVER_URL}/user/${userID}`)
 			.then((response) => response.json())
 			.catch((e) => console.log(e));
-			console.log(user)
 		this.props.navigation.navigate('Account Profile', { user });
 	}
 
@@ -234,23 +234,7 @@ class VideosIndex extends React.Component {
 									</View>
 									{video.src ?
 										<View>
-											<Video
-												posterSource={{uri: video.thumbnailSrc ? apiBaseURL + '/' + video.thumbnailSrc : apiBaseURL + '/images/videoPlaceholder.png'}}
-												ref={(ref) => {
-													if(ref){
-														ref.loadAsync({uri: apiBaseURL + '/' + video.src})
-															.then(() => {
-																ref.setState({
-																	showPoster: false
-																});
-															});
-													}
-												}}
-												style={{height: 225, width: '100%'}}
-												usePoster={true}
-												useNativeControls={true}
-												// overrideFileExtensionAndroid="mp4"
-											/>
+											<VideoComponent video={video}/>
 										</View>
 										:
 										<Text>No Video Source</Text>

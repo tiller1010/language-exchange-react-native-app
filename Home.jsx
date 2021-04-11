@@ -4,6 +4,7 @@ import { Text, View, TextInput, Image, Button as TextButton, ScrollView } from '
 import { Video } from 'expo-av';
 import Styles from './Styles.js';
 import { Button, RadioButton, Searchbar, Menu } from 'react-native-paper';
+import VideoComponent from './VideoComponent.jsx';
 
 class Home extends React.Component {
 	constructor(props){
@@ -133,23 +134,7 @@ class Home extends React.Component {
 			    		<View key={video._id} style={{height: 300, width: 300}}>
 				    		<View style={{...Styles.pad}}>
 								<Text style={Styles.subHeading}>{video.title}</Text>
-								<Video
-									posterSource={{uri: video.thumbnailSrc ? apiBaseURL + '/' + video.thumbnailSrc : apiBaseURL + '/images/videoPlaceholder.png'}}
-									ref={(ref) => {
-										if(ref){
-											ref.loadAsync({uri: apiBaseURL + '/' + video.src})
-												.then(() => {
-													ref.setState({
-														showPoster: false
-													});
-												});
-										}
-									}}
-									style={{height: 225, width: '100%', borderRadius: 25, overflow: 'hidden'}}
-									usePoster={true}
-									useNativeControls={true}
-									// overrideFileExtensionAndroid="mp4"
-								/>
+								<VideoComponent video={video}/>
 							</View>
 						</View>
 		    		)}

@@ -4,6 +4,7 @@ import { Video } from 'expo-av';
 import Styles from './Styles.js';
 import { Button, RadioButton, Searchbar, Menu, Headline } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import VideoComponent from './VideoComponent.jsx';
 
 class AccountProfile extends React.Component {
 	constructor(props){
@@ -40,6 +41,8 @@ class AccountProfile extends React.Component {
 				this.findAndSyncUser(userProfile, authenticatedUser);
 			} else if(userProfile._id){
 				this.setState({ user: userProfile });
+			} else if(authenticatedUser._id){
+				this.findAndSyncUser(authenticatedUser, authenticatedUser);
 			} else {
 				this.props.navigation.navigate('Login');
 			}
@@ -64,6 +67,8 @@ class AccountProfile extends React.Component {
 				this.findAndSyncUser(userProfile, authenticatedUser);
 			} else if(userProfile._id){
 				this.setState({ user: userProfile });
+			} else if(authenticatedUser._id){
+				this.findAndSyncUser(authenticatedUser, authenticatedUser);
 			} else {
 				this.props.navigation.navigate('Login');
 			}
@@ -313,23 +318,7 @@ class AccountProfile extends React.Component {
 														<Text></Text>
 													}
 												</View>
-												<Video
-													posterSource={{uri: video.thumbnailSrc ? apiBaseURL + '/' + video.thumbnailSrc : apiBaseURL + '/images/videoPlaceholder.png'}}
-													ref={(ref) => {
-														if(ref){
-															ref.loadAsync({uri: apiBaseURL + '/' + video.src})
-																.then(() => {
-																	ref.setState({
-																		showPoster: false
-																	});
-																});
-														}
-													}}
-													style={{height: 225, width: '100%', borderRadius: 25, overflow: 'hidden'}}
-													usePoster={true}
-													useNativeControls={true}
-													// overrideFileExtensionAndroid="mp4"
-												/>
+												<VideoComponent video={video}/>
 											</View>
 											<View style={{ ...Styles.flex, ...Styles.xSpaceAround, ...Styles.yCenter }}>
 												<Text>Likes: {video.likes || 0}</Text>
@@ -364,23 +353,7 @@ class AccountProfile extends React.Component {
 														<Text style={Styles.subHeading}>{video.title}</Text>
 													</View>
 												</View>
-												<Video
-													posterSource={{uri: video.thumbnailSrc ? apiBaseURL + '/' + video.thumbnailSrc : apiBaseURL + '/images/videoPlaceholder.png'}}
-													ref={(ref) => {
-														if(ref){
-															ref.loadAsync({uri: apiBaseURL + '/' + video.src})
-																.then(() => {
-																	ref.setState({
-																		showPoster: false
-																	});
-																});
-														}
-													}}
-													style={{height: 225, width: '100%', borderRadius: 25, overflow: 'hidden'}}
-													usePoster={true}
-													useNativeControls={true}
-													// overrideFileExtensionAndroid="mp4"
-												/>
+												<VideoComponent video={video}/>
 											</View>
 											<View style={{ ...Styles.flex, ...Styles.xSpaceAround, ...Styles.yCenter }}>
 												<Text>Likes: {video.likes || 0}</Text>
