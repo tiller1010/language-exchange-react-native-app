@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, TextInput, Image, Button as TextButton, ScrollView } from 'react-native';
+import { Text, View, TextInput, Image, Button as TextButton, ScrollView, Alert } from 'react-native';
 import { Video } from 'expo-av';
 import Styles from './Styles.js';
 import { Button, RadioButton, Searchbar, Menu, Headline } from 'react-native-paper';
@@ -11,7 +11,6 @@ class AccountProfile extends React.Component {
 		super(props);
 		this.state = {
 			user: false,
-			openRemovalForm: false,
 			isCurrentTab: false,
 			isCurrentUser: false
 		}
@@ -20,6 +19,7 @@ class AccountProfile extends React.Component {
 		this.removeLike = this.removeLike.bind(this);
 		this.currentUserHasLikedVideo = this.currentUserHasLikedVideo.bind(this);
 		this.handleLogout = this.handleLogout.bind(this);
+		this.createRemoveVideoAlert = this.createRemoveVideoAlert.bind(this);
 		this.handleDeleteVideo = this.handleDeleteVideo.bind(this);
 	}
 
@@ -203,13 +203,50 @@ class AccountProfile extends React.Component {
 		this.props.navigation.navigate('Login');
 	}
 
-	handleDeleteVideo(event){
-		if(this.state.openRemovalForm){
-			this.state.openRemovalForm.submit();
-		}
-		this.setState({
-			openRemovalForm: event.target.parentElement
-		})
+
+	async createRemoveVideoAlert(video){
+		Alert.alert(
+			'Are you sure you want to remove this video?',
+			'',
+			[
+				{
+					text: 'Remove Video',
+					onPress: async () => {
+						// Send remove video request
+						await fetch(`${process.env.APP_SERVER_URL}/videos/remove`, {
+							method: 'POST',
+							headers: {
+								"Content-Type": "application/json"
+							},
+							body: JSON.stringify({
+								videoID: video._id,
+								nativeFlag: true
+							})
+						}).then((response) => response)
+						  .then(Alert.alert('Video Removed.', ''))
+						  .catch((e) => console.log(e));
+
+						//Update user state
+						let updatedUserUploadedVideos = [];
+						let updatedUser = {...this.state.user};
+						updatedUser.uploadedVideos.forEach((uploadedVideo) => {
+							if(uploadedVideo._id !== video._id){
+								updatedUserUploadedVideos.push(uploadedVideo);
+							}
+						});
+						updatedUser.uploadedVideos = updatedUserUploadedVideos;
+						this.setState({ user: updatedUser });
+					}
+				},
+				{
+					text: 'Close'
+				}
+			]
+		);
+	}
+
+	handleDeleteVideo(video){
+		this.createRemoveVideoAlert(video);
 	}
 
 	renderMedia(topic){
@@ -230,12 +267,6 @@ class AccountProfile extends React.Component {
 	}
 
 	render(){
-
-		// document.addEventListener('cssmodal:hide', () => {
-		// 	this.setState({
-		// 		openRemovalForm: false
-		// 	});
-		// });
 
 		var apiBaseURL = process.env.APP_SERVER_URL;
 
@@ -274,31 +305,6 @@ class AccountProfile extends React.Component {
 								<Headline>No Completed Topics</Headline>
 							</View>
 						}
-						{/*this.state.isCurrentUser ?
-							<View className="modal--show" id="remove-video" tabIndex="-1" role="dialog" aria-labelledby="modal-label" aria-hidden="true">
-								<View className="modal-inner">
-									<header id="modal-label">
-										<Text>Remove Video</Text>
-									</header>
-									<View className="modal-content">
-										Are you sure you want to remove this video?
-									</View>
-									<footer className="flex x-space-around">
-										<a className="Button" href="#remove-video" onPress={this.handleDeleteVideo}>
-											Remove Video
-											<FontAwesomeIcon icon={faTrash}/>
-										</Button>
-										<Button href="#!" className="Button">
-											Close
-											<FontAwesomeIcon icon={faTimes}/>
-										</Button>
-									</footer>
-								</View>
-								<Button href="#!" className="modal-close" title="Close this modal" data-close="Close" data-dismiss="modal">?</Button>
-							</View>
-							:
-							<Text></Text>
-						*/}
 						{this.state.user.uploadedVideos.length ?
 							<View>
 								<Headline>Uploaded Videos</Headline>
@@ -311,7 +317,7 @@ class AccountProfile extends React.Component {
 														<Text style={Styles.subHeading}>{video.title}</Text>
 													</View>
 													{this.state.isCurrentUser ?
-														<Button icon="trash-can" onPress={this.handleDeleteVideo}>
+														<Button icon="trash-can" onPress={() => this.handleDeleteVideo(video)}>
 															Remove Video
 														</Button>
 														:
