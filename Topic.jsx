@@ -4,6 +4,7 @@ import { Text, View, Button as TextButton, Image, ScrollView, Alert } from 'reac
 import { Video } from 'expo-av';
 import Styles from './Styles.js';
 import { Button, TextInput } from 'react-native-paper';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function shuffleArray(array) {
 	let newArray = [...array];
@@ -21,7 +22,8 @@ class Topic extends React.Component {
 	constructor(){
 		super();
 		this.state = {
-			challenges: []
+			challenges: [],
+			allChallengesAnswered: false
 		}
 		this.checkAnswerInput = this.checkAnswerInput.bind(this);
 	}
@@ -49,6 +51,31 @@ class Topic extends React.Component {
 										challenges = challenges.concat(challenge);
 										this.setState({
 											challenges
+										}, async () => {
+											// Check if current user has completed this topic
+											var authenticatedUser = await AsyncStorage.getItem('@user');
+											if(authenticatedUser){
+												authenticatedUser = JSON.parse(authenticatedUser);
+											} else {
+												authenticatedUser = { completedTopics: [] };
+											}
+											let completed = false;
+											authenticatedUser.completedTopics.forEach((topic) => {
+												if(topic.id == this.props.route.params.topicID){
+													completed = true;
+												}
+											});
+											if(completed){
+												let completedChalleges = [];
+												this.state.challenges.forEach((stateChallenge) => {
+													stateChallenge.answered = 'correct';
+													completedChalleges.push(stateChallenge);
+												});
+												this.setState({
+													challenges: completedChalleges,
+													allChallengesAnswered: true
+												});
+											}
 										});
 									}
 								}
@@ -60,9 +87,8 @@ class Topic extends React.Component {
 
 	}
 
-	checkAnswerInput(input, challenge){
+	async checkAnswerInput(input, challenge){
 		if(input.toLowerCase() == challenge.Title.toLowerCase()){
-			console.log('correct')
 			const newState = this.state;
 			const challengeIndex = newState.challenges.indexOf(challenge);
 			challenge.answered = 'correct';
@@ -79,6 +105,15 @@ class Topic extends React.Component {
 		});
 		if(allChallengesAnswered){
 			Alert.alert('Congratulations! You have answered each challenge correctly.');
+			axios.post(`${process.env.APP_SERVER_URL}/level/${this.props.route.params.levelID}/topics/${this.props.route.params.topicID}`)
+				.then(res => {
+					if(res.data){
+						console.log(res.data)
+					}
+				})
+			this.setState({
+				allChallengesAnswered
+			});
 		}
 	}
 
