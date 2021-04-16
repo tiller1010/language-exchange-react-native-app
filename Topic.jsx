@@ -26,6 +26,7 @@ class Topic extends React.Component {
 			allChallengesAnswered: false
 		}
 		this.checkAnswerInput = this.checkAnswerInput.bind(this);
+		this.handleResetTopic = this.handleResetTopic.bind(this);
 	}
 
 	async componentDidMount(){
@@ -117,6 +118,23 @@ class Topic extends React.Component {
 		}
 	}
 
+	async handleResetTopic(){
+		axios.post(`${process.env.APP_SERVER_URL}/level/${this.props.route.params.levelID}/topics/${this.props.route.params.topicID}/reset`)
+			.then(res => {
+				this.setState({
+					allChallengesAnswered: false
+				});
+				let completedChalleges = [];
+				this.state.challenges.forEach((stateChallenge) => {
+					delete stateChallenge.answered;
+					completedChalleges.push(stateChallenge);
+				});
+				this.setState({
+					challenges: completedChalleges
+				});
+			});
+	}
+
 	renderMedia(challenge){
 		if(challenge.FeaturedMedia){
 			if(challenge.FeaturedMedia.length){
@@ -173,7 +191,15 @@ class Topic extends React.Component {
 				<View style={Styles.pad}>
 					<Text style={Styles.heading}>{this.state.topic}</Text>
 				</View>
-
+				{this.state.allChallengesAnswered ?
+		    		<View style={Styles.pad}>
+						<Button icon="sync" mode="outlined" contentStyle={{flexDirection: 'row-reverse'}} onPress={this.handleResetTopic}>
+							Reset Topic
+						</Button>
+		    		</View>
+		    		:
+		    		<Text></Text>
+		    	}
 			    {this.state.challenges ?
 			    	<View style={{...Styles.flex, ...Styles.column, ...Styles.fullWidth, ...Styles.xCenter}}>
 				    	{this.state.challenges.map((challenge) => 

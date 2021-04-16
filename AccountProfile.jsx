@@ -277,9 +277,11 @@ class AccountProfile extends React.Component {
 						{this.state.isCurrentUser ?
 							<View>
 								<Text style={Styles.heading}>Welcome, {this.state.user.firstName}!</Text>
-								<Button icon="logout" onPress={this.handleLogout}>
-									Logout
-								</Button>
+								<View style={Styles.pad}>
+									<Button icon="logout" mode="contained" labelStyle={{color: 'white'}} contentStyle={{flexDirection: 'row-reverse'}} onPress={this.handleLogout}>
+										Logout
+									</Button>
+								</View>
 							</View>
 							:
 							<Text style={Styles.heading}>{this.state.user.firstName}</Text>

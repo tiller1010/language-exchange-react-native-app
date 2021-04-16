@@ -156,20 +156,24 @@ class VideosAdd extends React.Component {
 						<View style={Styles.pad}>
 							<Text style={Styles.subHeading}>Video Preview</Text>
 						</View>
-						<Video
-							source={this.state.video}
-							ref={(ref) => {
-								this.player = ref
-							}}
-							style={{height: 225, width: '100%'}}
-							useNativeControls={true}
-						/>
+						<View style={Styles.pad}>
+							<Video
+								source={this.state.video}
+								ref={(ref) => {
+									this.player = ref
+								}}
+								style={{height: 225, width: '100%', borderRadius: 25, borderWidth: 2, borderColor: 'black'}}
+								useNativeControls={true}
+							/>
+						</View>
 					</View>
 					<View>
 						<View style={Styles.pad}>
 							<Text style={Styles.subHeading}>Thumbnail Preview</Text>
 						</View>
-						<ImageBackground source={this.state.thumbnail} style={{height: 225, width: '100%'}}></ImageBackground>
+						<View style={Styles.pad}>
+							<ImageBackground source={this.state.thumbnail} style={{height: 225, width: '100%', borderRadius: 25, borderWidth: 2, borderColor: 'black', overflow: 'hidden'}}></ImageBackground>
+						</View>
 					</View>
 				</View>
 			</ScrollView>

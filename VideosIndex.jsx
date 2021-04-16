@@ -183,39 +183,41 @@ class VideosIndex extends React.Component {
 				    </View>
 			    </View>
 				<View>
-					{this.state.pages.length ?
-						<ScrollView horizontal>
-							{this.state.currentPage > 1 ?
-								<View>
-									<Button mode="outlined" icon="arrow-left" onPress={() => this.handleChangePage(`${apiBaseURL}/videos.json?${keywords ? 'keywords=' + keywords + '&' : ''}page=${Number(this.state.currentPage) - 1}`)}>
-										Prev
-									</Button>
-								</View>
-								:
-								<Text></Text>
-							}
-							{this.state.pages.map((page) =>
-								<View key={this.state.pages.indexOf(page)}>
-									<Button mode={this.state.pages.indexOf(page) + 1 == this.state.currentPage ? 'contained' : 'outlined'}
-										labelStyle={this.state.pages.indexOf(page) + 1 == this.state.currentPage ? {color: 'white'} : {}}
-										onPress={() => this.handleChangePage(`${apiBaseURL}/videos.json?${keywords ? 'keywords=' + keywords + '&' : ''}page=${page.pageNumber}`)}>
-										{page.pageNumber}
-									</Button>
-								</View>
-							)}
-							{this.state.currentPage < this.state.pages.length ?
-								<View>
-									<Button mode="outlined" icon="arrow-right" contentStyle={{flexDirection: 'row-reverse'}} onPress={() => this.handleChangePage(`${apiBaseURL}/videos.json?${keywords ? 'keywords=' + keywords + '&' : ''}page=${Number(this.state.currentPage) + 1}`)}>
-										Next
-									</Button>
-								</View>
-								:
-								<Text></Text>
-							}
-						</ScrollView>
-						:
-						<Text></Text>
-					}
+					<View style={Styles.pad}>
+						{this.state.pages.length ?
+							<ScrollView horizontal>
+								{this.state.currentPage > 1 ?
+									<View>
+										<Button mode="outlined" icon="arrow-left" onPress={() => this.handleChangePage(`${apiBaseURL}/videos.json?${keywords ? 'keywords=' + keywords + '&' : ''}page=${Number(this.state.currentPage) - 1}`)}>
+											Prev
+										</Button>
+									</View>
+									:
+									<Text></Text>
+								}
+								{this.state.pages.map((page) =>
+									<View key={this.state.pages.indexOf(page)}>
+										<Button mode={this.state.pages.indexOf(page) + 1 == this.state.currentPage ? 'contained' : 'outlined'}
+											labelStyle={this.state.pages.indexOf(page) + 1 == this.state.currentPage ? {color: 'white'} : {}}
+											onPress={() => this.handleChangePage(`${apiBaseURL}/videos.json?${keywords ? 'keywords=' + keywords + '&' : ''}page=${page.pageNumber}`)}>
+											{page.pageNumber}
+										</Button>
+									</View>
+								)}
+								{this.state.currentPage < this.state.pages.length ?
+									<View>
+										<Button mode="outlined" icon="arrow-right" contentStyle={{flexDirection: 'row-reverse'}} onPress={() => this.handleChangePage(`${apiBaseURL}/videos.json?${keywords ? 'keywords=' + keywords + '&' : ''}page=${Number(this.state.currentPage) + 1}`)}>
+											Next
+										</Button>
+									</View>
+									:
+									<Text></Text>
+								}
+							</ScrollView>
+							:
+							<Text></Text>
+						}
+					</View>
 					{this.state.videos.length ?
 						<View>
 							{this.state.videos.map((video) => 
@@ -245,39 +247,41 @@ class VideosIndex extends React.Component {
 						:
 						<Text>Loading</Text>
 					}
-					{this.state.pages.length ?
-						<ScrollView horizontal>
-							{this.state.currentPage > 1 ?
-								<View>
-									<Button mode="outlined" icon="arrow-left" onPress={() => this.handleChangePage(`${apiBaseURL}/videos.json?${keywords ? 'keywords=' + keywords + '&' : ''}page=${Number(this.state.currentPage) - 1}`)}>
-										Prev
-									</Button>
-								</View>
-								:
-								<Text></Text>
-							}
-							{this.state.pages.map((page) =>
-								<View key={this.state.pages.indexOf(page)}>
-									<Button mode={this.state.pages.indexOf(page) + 1 == this.state.currentPage ? 'contained' : 'outlined'}
-										labelStyle={this.state.pages.indexOf(page) + 1 == this.state.currentPage ? {color: 'white'} : {}}
-										onPress={() => this.handleChangePage(`${apiBaseURL}/videos.json?${keywords ? 'keywords=' + keywords + '&' : ''}page=${page.pageNumber}`)}>
-										{page.pageNumber}
-									</Button>
-								</View>
-							)}
-							{this.state.currentPage < this.state.pages.length ?
-								<View>
-									<Button mode="outlined" icon="arrow-right" contentStyle={{flexDirection: 'row-reverse'}} onPress={() => this.handleChangePage(`${apiBaseURL}/videos.json?${keywords ? 'keywords=' + keywords + '&' : ''}page=${Number(this.state.currentPage) + 1}`)}>
-										Next
-									</Button>
-								</View>
-								:
-								<Text></Text>
-							}
-						</ScrollView>
-						:
-						<Text></Text>
-					}
+					<View style={Styles.pad}>
+						{this.state.pages.length ?
+							<ScrollView horizontal>
+								{this.state.currentPage > 1 ?
+									<View>
+										<Button mode="outlined" icon="arrow-left" onPress={() => this.handleChangePage(`${apiBaseURL}/videos.json?${keywords ? 'keywords=' + keywords + '&' : ''}page=${Number(this.state.currentPage) - 1}`)}>
+											Prev
+										</Button>
+									</View>
+									:
+									<Text></Text>
+								}
+								{this.state.pages.map((page) =>
+									<View key={this.state.pages.indexOf(page)}>
+										<Button mode={this.state.pages.indexOf(page) + 1 == this.state.currentPage ? 'contained' : 'outlined'}
+											labelStyle={this.state.pages.indexOf(page) + 1 == this.state.currentPage ? {color: 'white'} : {}}
+											onPress={() => this.handleChangePage(`${apiBaseURL}/videos.json?${keywords ? 'keywords=' + keywords + '&' : ''}page=${page.pageNumber}`)}>
+											{page.pageNumber}
+										</Button>
+									</View>
+								)}
+								{this.state.currentPage < this.state.pages.length ?
+									<View>
+										<Button mode="outlined" icon="arrow-right" contentStyle={{flexDirection: 'row-reverse'}} onPress={() => this.handleChangePage(`${apiBaseURL}/videos.json?${keywords ? 'keywords=' + keywords + '&' : ''}page=${Number(this.state.currentPage) + 1}`)}>
+											Next
+										</Button>
+									</View>
+									:
+									<Text></Text>
+								}
+							</ScrollView>
+							:
+							<Text></Text>
+						}
+					</View>
 				</View>
 			</ScrollView>
 		);
