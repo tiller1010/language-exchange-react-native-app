@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, Image, Button as TextButton, ScrollView, Alert } from 'react-native';
+import { Text, View, Image, Button as TextButton, ScrollView, Alert, Linking } from 'react-native';
 import { Video } from 'expo-av';
 import Styles from './Styles.js';
 import { Button, RadioButton, TextInput, Menu } from 'react-native-paper';
@@ -18,6 +18,7 @@ class Register extends React.Component {
 		}
 		this.handleTextChange = this.handleTextChange.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
+		this.handleGoogleLogin = this.handleGoogleLogin.bind(this);
 		this.createAlert = this.createAlert.bind(this);
 	}
 
@@ -158,9 +159,7 @@ class Register extends React.Component {
 							</Button>
 						</View>
 					</View>
-					<Button icon="google" contentStyle={{flexDirection: 'row-reverse'}} onPress={() =>
-						this.props.navigation.navigate('Register')
-					}>Register with Google</Button>
+					<Button icon="google" contentStyle={{flexDirection: 'row-reverse'}} onPress={this.handleGoogleLogin}>Register with Google</Button>
 				</View>
 			</ScrollView>
 		);

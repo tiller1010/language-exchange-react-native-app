@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, Image, Button as TextButton, ScrollView, Alert } from 'react-native';
+import { Text, View, Image, Button as TextButton, ScrollView, Alert, Linking } from 'react-native';
 import { Video } from 'expo-av';
 import Styles from './Styles.js';
 import { Button, RadioButton, TextInput, Menu } from 'react-native-paper';
@@ -16,6 +16,7 @@ class Login extends React.Component {
 		this.handleDisplayNameChange = this.handleDisplayNameChange.bind(this);
 		this.handlePasswordChange = this.handlePasswordChange.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
+		this.handleGoogleLogin = this.handleGoogleLogin.bind(this);
 		this.createAlert = this.createAlert.bind(this);
 	}
 
@@ -64,6 +65,12 @@ class Login extends React.Component {
 		} else {
 			this.createAlert('Complete the form before submitting');
 		}
+	}
+
+	handleGoogleLogin(){
+		// Cannot build this locally. Google Oauth does not support local ip address as authorized URI
+		// Take a look here when the web app is live https://rationalappdev.com/logging-into-react-native-apps-with-facebook-or-google/
+		Linking.openURL(`${process.env.APP_SERVER_URL}/auth/google`);
 	}
 
 	createAlert(alertPhrase, clearState = false){
@@ -121,9 +128,7 @@ class Login extends React.Component {
 					<Button icon="arrow-right" contentStyle={{flexDirection: 'row-reverse'}} onPress={() =>
 						this.props.navigation.navigate('Register')
 					}>Register</Button>
-					<Button icon="google" contentStyle={{flexDirection: 'row-reverse'}} onPress={() =>
-						this.props.navigation.navigate('Register')
-					}>Login with Google</Button>
+					<Button icon="google" contentStyle={{flexDirection: 'row-reverse'}} onPress={this.handleGoogleLogin}>Login with Google</Button>
 				</View>
 			</ScrollView>
 		);
