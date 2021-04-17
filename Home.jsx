@@ -18,6 +18,7 @@ class Home extends React.Component {
 		}
 		this.toggleSortControls = this.toggleSortControls.bind(this);
 		this.handleSortChange = this.handleSortChange.bind(this);
+		this.handleUserProfileNavigation = this.handleUserProfileNavigation.bind(this);
 	}
 
 	async componentDidMount(){
@@ -83,6 +84,13 @@ class Home extends React.Component {
 		}
 	}
 
+	async handleUserProfileNavigation(userID){
+		let user = await fetch(`${process.env.APP_SERVER_URL}/user/${userID}`)
+			.then((response) => response.json())
+			.catch((e) => console.log(e));
+		this.props.navigation.navigate('Account Profile', { user });
+	}
+
 	render(){
 		
 		var apiBaseURL = process.env.APP_SERVER_URL;
@@ -132,8 +140,19 @@ class Home extends React.Component {
 				<ScrollView horizontal contentContainerStyle={{ width: 1500 }}>
 			    	{this.state.recentVideos.map((video) => 
 			    		<View key={video._id} style={{height: 300, width: 300}}>
-				    		<View style={{...Styles.pad}}>
+							<View style={{...Styles.flex, ...Styles.xSpaceBetween, ...Styles.yCenter, ...Styles.pad, ...Styles.noYPad}}>
 								<Text style={Styles.subHeading}>{video.title}</Text>
+								{video.uploadedBy._id ?
+									<View>
+										<TextButton title={`By: ${video.uploadedBy.displayName}`} onPress={() => this.handleUserProfileNavigation(video.uploadedBy._id)}/>
+									</View>
+									:
+									<View>
+										<Text>By: {video.uploadedBy.displayName}</Text>
+									</View>
+								}
+							</View>
+				    		<View style={{...Styles.pad}}>
 								<VideoComponent video={video}/>
 							</View>
 						</View>

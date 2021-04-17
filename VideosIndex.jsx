@@ -222,25 +222,27 @@ class VideosIndex extends React.Component {
 						<View>
 							{this.state.videos.map((video) => 
 								<View key={video._id}>
-									<View style={{...Styles.flex, ...Styles.xSpaceBetween, ...Styles.yCenter}}>
-										<Text style={Styles.subHeading}>{video.title}</Text>
-										{video.uploadedBy._id ?
+									<View style={Styles.pad}>
+										<View style={{...Styles.flex, ...Styles.xSpaceBetween, ...Styles.yCenter}}>
+											<Text style={Styles.subHeading}>{video.title}</Text>
+											{video.uploadedBy._id ?
+												<View>
+													<TextButton title={`By: ${video.uploadedBy.displayName}`} onPress={() => this.handleUserProfileNavigation(video.uploadedBy._id)}/>
+												</View>
+												:
+												<View>
+													<Text>By: {video.uploadedBy.displayName}</Text>
+												</View>
+											}
+										</View>
+										{video.src ?
 											<View>
-												<TextButton title={`By: ${video.uploadedBy.displayName}`} onPress={() => this.handleUserProfileNavigation(video.uploadedBy._id)}/>
+												<VideoComponent video={video}/>
 											</View>
 											:
-											<View>
-												<Text>By: {video.uploadedBy.displayName}</Text>
-											</View>
+											<Text>No Video Source</Text>
 										}
 									</View>
-									{video.src ?
-										<View>
-											<VideoComponent video={video}/>
-										</View>
-										:
-										<Text>No Video Source</Text>
-									}
 								</View>
 							)}
 						</View>

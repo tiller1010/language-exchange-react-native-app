@@ -120,19 +120,17 @@ class Topic extends React.Component {
 
 	async handleResetTopic(){
 		axios.post(`${process.env.APP_SERVER_URL}/level/${this.props.route.params.levelID}/topics/${this.props.route.params.topicID}/reset`)
-			.then(res => {
-				this.setState({
-					allChallengesAnswered: false
-				});
-				let completedChalleges = [];
-				this.state.challenges.forEach((stateChallenge) => {
-					delete stateChallenge.answered;
-					completedChalleges.push(stateChallenge);
-				});
-				this.setState({
-					challenges: completedChalleges
-				});
-			});
+		this.setState({
+			allChallengesAnswered: false
+		});
+		let completedChalleges = [];
+		this.state.challenges.forEach((stateChallenge) => {
+			delete stateChallenge.answered;
+			completedChalleges.push(stateChallenge);
+		});
+		this.setState({
+			challenges: completedChalleges
+		});
 	}
 
 	renderMedia(challenge){
