@@ -5,6 +5,7 @@ import { parse as URLParse } from 'search-params';
 import Styles from './Styles.js';
 import { Button, RadioButton, Searchbar, Menu } from 'react-native-paper';
 import VideoComponent from './VideoComponent.jsx';
+import ReadMore from '@kangyoosam/react-native-readmore';
 
 async function getVideos(url=`${process.env.APP_SERVER_URL}/videos.json`){
 
@@ -224,7 +225,13 @@ class VideosIndex extends React.Component {
 								<View key={video._id}>
 									<View style={Styles.pad}>
 										<View style={{...Styles.flex, ...Styles.xSpaceBetween, ...Styles.yCenter}}>
-											<Text style={Styles.subHeading}>{video.title}</Text>
+											<View style={{ maxWidth: 260 }}>
+												<ReadMore
+													numberOfLines={1}
+												>
+													<Text style={Styles.subHeading}>{video.title}</Text>
+												</ReadMore>
+											</View>
 											{video.uploadedBy._id ?
 												<View>
 													<TextButton title={`By: ${video.uploadedBy.displayName}`} onPress={() => this.handleUserProfileNavigation(video.uploadedBy._id)}/>

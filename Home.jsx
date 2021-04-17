@@ -5,6 +5,7 @@ import { Video } from 'expo-av';
 import Styles from './Styles.js';
 import { Button, RadioButton, Searchbar, Menu } from 'react-native-paper';
 import VideoComponent from './VideoComponent.jsx';
+import ReadMore from '@kangyoosam/react-native-readmore';
 
 class Home extends React.Component {
 	constructor(props){
@@ -14,11 +15,15 @@ class Home extends React.Component {
 			keywords: '',
 			sort: '',
 			sortControlStatus: '',
-			recentVideos: []
+			recentVideos: [],
+			userLikedVideos: []
 		}
 		this.toggleSortControls = this.toggleSortControls.bind(this);
 		this.handleSortChange = this.handleSortChange.bind(this);
 		this.handleUserProfileNavigation = this.handleUserProfileNavigation.bind(this);
+		this.sendLike = this.sendLike.bind(this);
+		this.removeLike = this.removeLike.bind(this);
+		this.currentUserHasLikedVideo = this.currentUserHasLikedVideo.bind(this);
 	}
 
 	async componentDidMount(){
@@ -55,6 +60,64 @@ class Home extends React.Component {
 		}, () => {
 			this.props.navigation.navigate('Videos', {sort: this.state.sort, keywords: this.state.keywords || ''});
 		});
+	}
+
+	async sendLike(video){
+		const newLikedVideo = await fetch(`${process.env.APP_SERVER_URL}/sendLike/${video._id}`)
+			.then(res => res.json())
+			.catch(error => console.log(error));
+		if(newLikedVideo.message){
+			// Display error message if included in response
+			alert(newLikedVideo.message);
+		} else if(newLikedVideo) {
+			// Update the video state to be liked by the current user. Used immediately after liking.
+			newLikedVideo.likedByCurrentUser = true;
+			let newVideos = this.state.recentVideos;
+			newVideos[newVideos.indexOf(video)] = newLikedVideo;
+			// Add video to user's liked videos. Used when a re-render occurs.
+			let newUserLikedVideos = this.state.userLikedVideos;
+			newUserLikedVideos.push(video);
+			this.setState({
+				recentVideos: newVideos,
+				userLikedVideos: newUserLikedVideos
+			});
+		}
+	}
+
+	async removeLike(video){
+		const newUnlikedVideo = await fetch(`${process.env.APP_SERVER_URL}/removeLike/${video._id}`)
+			.then(res => res.json())
+			.catch(error => console.log(error));
+		if(newUnlikedVideo.message){
+			// Display error message if included in response
+			alert(newUnlikedVideo.message);
+		} else if(newUnlikedVideo) {
+			// Update the video state to remove like from the current user. Used immediately after unliking.
+			newUnlikedVideo.likedByCurrentUser = false;
+			let newVideos = this.state.recentVideos;
+			newVideos[newVideos.indexOf(video)] = newUnlikedVideo;
+			// Remove video from user's liked videos. Used when a re-render occurs.
+			let newUserLikedVideos = [];
+			this.state.userLikedVideos.forEach((userLikedVideo) => {
+				if(userLikedVideo._id != video._id){
+					newUserLikedVideos.push(userLikedVideo);
+				}
+			});
+			this.setState({
+				recentVideos: newVideos,
+				userLikedVideos: newUserLikedVideos
+			});
+		}
+	}
+
+	currentUserHasLikedVideo(video){
+		let liked = false;
+		this.state.userLikedVideos.forEach((userLikedVideo) => {
+			if(userLikedVideo._id === video._id){
+				liked = true;
+			}
+		});
+		return liked;
 	}
 
 	renderMedia(topic){
@@ -137,23 +200,41 @@ class Home extends React.Component {
 				<View style={Styles.pad}>
 					<Text style={Styles.subHeading}>Recent Submissions</Text>
 				</View>
-				<ScrollView horizontal contentContainerStyle={{ width: 1500 }}>
+				<ScrollView horizontal>
 			    	{this.state.recentVideos.map((video) => 
-			    		<View key={video._id} style={{height: 300, width: 300}}>
-							<View style={{...Styles.flex, ...Styles.xSpaceBetween, ...Styles.yCenter, ...Styles.pad, ...Styles.noYPad}}>
-								<Text style={Styles.subHeading}>{video.title}</Text>
-								{video.uploadedBy._id ?
-									<View>
-										<TextButton title={`By: ${video.uploadedBy.displayName}`} onPress={() => this.handleUserProfileNavigation(video.uploadedBy._id)}/>
-									</View>
-									:
-									<View>
-										<Text>By: {video.uploadedBy.displayName}</Text>
-									</View>
-								}
-							</View>
+			    		<View key={video._id} style={{width: 300}}>
 				    		<View style={{...Styles.pad}}>
+								<View style={{ ...Styles.flex, ...Styles.xSpaceBetween }}>
+									<View style={{ maxWidth: 160 }}>
+										<ReadMore
+											numberOfLines={1}
+										>
+											<Text style={Styles.subHeading}>{video.title}</Text>
+										</ReadMore>
+									</View>
+									{video.uploadedBy._id ?
+										<View>
+											<TextButton title={`By: ${video.uploadedBy.displayName}`} onPress={() => this.handleUserProfileNavigation(video.uploadedBy._id)}/>
+										</View>
+										:
+										<View>
+											<Text>By: {video.uploadedBy.displayName}</Text>
+										</View>
+									}
+								</View>
 								<VideoComponent video={video}/>
+							</View>
+							<View style={{ ...Styles.flex, ...Styles.xSpaceAround, ...Styles.yCenter }}>
+								<Text>Likes: {video.likes || 0}</Text>
+								{video.likedByCurrentUser ?
+									<Button icon="star" onPress={() => this.removeLike(video)}>
+										Liked
+									</Button>
+									:
+									<Button icon="star-outline" onPress={() => this.sendLike(video)}>
+										Like
+									</Button>
+								}
 							</View>
 						</View>
 		    		)}
