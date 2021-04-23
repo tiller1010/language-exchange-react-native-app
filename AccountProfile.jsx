@@ -255,7 +255,7 @@ class AccountProfile extends React.Component {
 		let user = await fetch(`${process.env.APP_SERVER_URL}/user/${userID}`)
 			.then((response) => response.json())
 			.catch((e) => console.log(e));
-		this.props.navigation.navigate('Account Profile', { user });
+		this.props.navigation.push('Account Profile', { user });
 	}
 
 	renderMedia(topic){

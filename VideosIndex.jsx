@@ -6,6 +6,7 @@ import Styles from './Styles.js';
 import { Button, RadioButton, Searchbar, Menu } from 'react-native-paper';
 import VideoComponent from './VideoComponent.jsx';
 import ReadMore from '@kangyoosam/react-native-readmore';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 async function getVideos(url=`${process.env.APP_SERVER_URL}/videos.json`){
 
@@ -26,7 +27,8 @@ class VideosIndex extends React.Component {
 			currentPage: 1,
 			keywords: '',
 			sortControlStatus: '',
-			sort: ''
+			sort: '',
+			userLikedVideos: []
 		}
 		this.pagination = this.pagination.bind(this);
 		this.handleChangePage = this.handleChangePage.bind(this);
@@ -64,6 +66,14 @@ class VideosIndex extends React.Component {
 				videos: newVideos.videos,
 				pages: this.pagination(newVideos.pages),
 				currentPage: page
+			});
+		}
+
+		var authenticatedUser = await AsyncStorage.getItem('@user');
+		if(authenticatedUser){
+			authenticatedUser = JSON.parse(authenticatedUser);
+			this.setState({
+				userLikedVideos: JSON.parse(authenticatedUser.userLikedVideos)
 			});
 		}
 	}
@@ -116,6 +126,54 @@ class VideosIndex extends React.Component {
 			pageLinks.push({pageNumber: i});
 		}
 		return pageLinks;
+	}
+
+	async sendLike(video){
+		const newLikedVideo = await fetch(`${process.env.APP_SERVER_URL}/sendLike/${video._id}`)
+			.then(res => res.json())
+			.catch(error => console.log(error));
+		if(newLikedVideo.message){
+			// Display error message if included in response
+			alert(newLikedVideo.message);
+		} else if(newLikedVideo) {
+			// Update the video state to be liked by the current user. Used immediately after liking.
+			newLikedVideo.likedByCurrentUser = true;
+			let newVideos = this.state.videos;
+			newVideos[newVideos.indexOf(video)] = newLikedVideo;
+			// Add video to user's liked videos. Used when a re-render occurs.
+			let newUserLikedVideos = this.state.userLikedVideos;
+			newUserLikedVideos.push(video);
+			this.setState({
+				videos: newVideos,
+				userLikedVideos: newUserLikedVideos
+			});
+		}
+	}
+
+	async removeLike(video){
+		const newUnlikedVideo = await fetch(`${document.location.origin}/removeLike/${video._id}`)
+			.then(res => res.json())
+			.catch(error => console.log(error));
+		if(newUnlikedVideo.message){
+			// Display error message if included in response
+			alert(newUnlikedVideo.message);
+		} else if(newUnlikedVideo) {
+			// Update the video state to remove like from the current user. Used immediately after unliking.
+			newUnlikedVideo.likedByCurrentUser = false;
+			let newVideos = this.state.videos;
+			newVideos[newVideos.indexOf(video)] = newUnlikedVideo;
+			// Remove video from user's liked videos. Used when a re-render occurs.
+			let newUserLikedVideos = [];
+			this.state.userLikedVideos.forEach((userLikedVideo) => {
+				if(userLikedVideo._id != video._id){
+					newUserLikedVideos.push(userLikedVideo);
+				}
+			});
+			this.setState({
+				videos: newVideos,
+				userLikedVideos: newUserLikedVideos
+			});
+		}
 	}
 
 	async handleUserProfileNavigation(userID){
@@ -249,6 +307,18 @@ class VideosIndex extends React.Component {
 											:
 											<Text>No Video Source</Text>
 										}
+										<View style={{ ...Styles.flex, ...Styles.xSpaceAround, ...Styles.yCenter }}>
+											<Text>Likes: {video.likes || 0}</Text>
+											{video.likedByCurrentUser ?
+												<Button icon="star" onPress={() => this.removeLike(video)}>
+													Liked
+												</Button>
+												:
+												<Button icon="star-outline" onPress={() => this.sendLike(video)}>
+													Like
+												</Button>
+											}
+										</View>
 									</View>
 								</View>
 							)}

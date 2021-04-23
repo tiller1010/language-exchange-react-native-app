@@ -217,18 +217,22 @@ class Topic extends React.Component {
 					    				:
 					    				<Text></Text>
 					    			}
-					    			<View style={{...Styles.flex, ...Styles.xCenter}}>
-						    			<View style={Styles.halfPad}>
-											<Button icon="magnify" mode="contained" labelStyle={{color: 'white'}} contentStyle={{flexDirection: 'row-reverse'}} onPress={() => 
-										    	this.props.navigation.navigate('Videos', {keywords: challenge.Title})
-										    }>View others</Button>
+					    			{this.state.allChallengesAnswered ?
+						    			<View style={{...Styles.flex, ...Styles.xCenter}}>
+							    			<View style={Styles.halfPad}>
+												<Button icon="magnify" mode="contained" labelStyle={{color: 'white'}} contentStyle={{flexDirection: 'row-reverse'}} onPress={() => 
+											    	this.props.navigation.navigate('Videos', {keywords: challenge.Title})
+											    }>View others</Button>
+								    		</View>
+							    			<View style={Styles.halfPad}>
+												<Button icon="plus" mode="contained" labelStyle={{color: 'white'}} contentStyle={{flexDirection: 'row-reverse'}} onPress={() => 
+											    	this.props.navigation.navigate('Add Video', {challenge: challenge.Title})
+											    }>Submit your own</Button>
+								    		</View>
 							    		</View>
-						    			<View style={Styles.halfPad}>
-											<Button icon="plus" mode="contained" labelStyle={{color: 'white'}} contentStyle={{flexDirection: 'row-reverse'}} onPress={() => 
-										    	this.props.navigation.navigate('Add Video', {challenge: challenge.Title})
-										    }>Submit your own</Button>
-							    		</View>
-						    		</View>
+							    		:
+							    		<Text></Text>
+							    	}
 					    		</View>
 				    		</View>
 			    		)}

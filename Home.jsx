@@ -43,7 +43,16 @@ class Home extends React.Component {
 				this.setState({
 					levels: res.data
 				});
-			})
+			});
+			
+
+		var authenticatedUser = await AsyncStorage.getItem('@user');
+		if(authenticatedUser){
+			authenticatedUser = JSON.parse(authenticatedUser);
+			this.setState({
+				userLikedVideos: JSON.parse(authenticatedUser.userLikedVideos)
+			});
+		}
 	}
 
 	toggleSortControls(){
