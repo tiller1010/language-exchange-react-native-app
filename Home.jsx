@@ -6,6 +6,7 @@ import Styles from './Styles.js';
 import { Button, RadioButton, Searchbar, Menu } from 'react-native-paper';
 import VideoComponent from './VideoComponent.jsx';
 import ReadMore from '@kangyoosam/react-native-readmore';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 class Home extends React.Component {
 	constructor(props){

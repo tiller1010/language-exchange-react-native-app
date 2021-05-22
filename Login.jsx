@@ -4,6 +4,7 @@ import { Video } from 'expo-av';
 import Styles from './Styles.js';
 import { Button, RadioButton, TextInput, Menu } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { URL, URLSearchParams } from 'react-native-url-polyfill';
 
 class Login extends React.Component {
 	constructor(props){
@@ -26,6 +27,20 @@ class Login extends React.Component {
 				errors: JSON.parse(this.props.errors)
 			});
 		}
+
+		// When redirected back to app from google authenticator, login as user
+		Linking.addEventListener('url', async (url) => {
+			const urlObject = new URL(url.url);
+			const params = new URLSearchParams(urlObject.search);
+			const userID = params.get('userID');
+		  	if(userID){
+				const user = await fetch(`${process.env.APP_SERVER_URL}/user/${userID}`)
+					.then((response) => response.json())
+					.catch((e) => console.log(e));
+				await AsyncStorage.setItem('@user', JSON.stringify(user));
+				this.props.navigation.navigate('Account Profile', { user });
+		  	}
+		});
 	}
 
 	handleDisplayNameChange(text){
@@ -68,9 +83,7 @@ class Login extends React.Component {
 	}
 
 	handleGoogleLogin(){
-		// Cannot build this locally. Google Oauth does not support local ip address as authorized URI
-		// Take a look here when the web app is live https://rationalappdev.com/logging-into-react-native-apps-with-facebook-or-google/
-		Linking.openURL(`${process.env.APP_SERVER_URL}/auth/google`);
+		Linking.openURL(`${process.env.APP_SERVER_URL}/auth/google?nativeFlag=true`);
 	}
 
 	createAlert(alertPhrase, clearState = false){

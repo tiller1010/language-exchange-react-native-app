@@ -28,6 +28,20 @@ class Register extends React.Component {
 				errors: JSON.parse(this.props.errors)
 			});
 		}
+
+		// When redirected back to app from google authenticator, login as user
+		Linking.addEventListener('url', async (url) => {
+			const urlObject = new URL(url.url);
+			const params = new URLSearchParams(urlObject.search);
+			const userID = params.get('userID');
+		  	if(userID){
+				const user = await fetch(`${process.env.APP_SERVER_URL}/user/${userID}`)
+					.then((response) => response.json())
+					.catch((e) => console.log(e));
+				await AsyncStorage.setItem('@user', JSON.stringify(user));
+				this.props.navigation.navigate('Account Profile', { user });
+		  	}
+		});
 	}
 	
 	handleTextChange(text, field){
@@ -97,6 +111,10 @@ class Register extends React.Component {
 		} else {
 			this.createAlert('Complete the form before submitting');
 		}
+	}
+
+	handleGoogleLogin(){
+		Linking.openURL(`${process.env.APP_SERVER_URL}/auth/google?nativeFlag=true`);
 	}
 
 	createAlert(alertPhrase, clearState = false){
