@@ -32,7 +32,6 @@ class Home extends React.Component {
 		console.log('Fetching from:', process.env.APP_SERVER_URL);
 		axios.get(`${process.env.APP_SERVER_URL}/recent-videos`)
 			.then(res => {
-				console.log(res)
 				this.setState({
 					recentVideos: res.data.videos
 				});
@@ -50,9 +49,11 @@ class Home extends React.Component {
 		var authenticatedUser = await AsyncStorage.getItem('@user');
 		if(authenticatedUser){
 			authenticatedUser = JSON.parse(authenticatedUser);
-			this.setState({
-				userLikedVideos: JSON.parse(authenticatedUser.userLikedVideos)
-			});
+			if(authenticatedUser.userLikedVideos){
+				this.setState({
+					userLikedVideos: authenticatedUser.userLikedVideos
+				});
+			}
 		}
 	}
 

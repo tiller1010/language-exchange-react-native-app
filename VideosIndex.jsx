@@ -72,9 +72,11 @@ class VideosIndex extends React.Component {
 		var authenticatedUser = await AsyncStorage.getItem('@user');
 		if(authenticatedUser){
 			authenticatedUser = JSON.parse(authenticatedUser);
-			this.setState({
-				userLikedVideos: JSON.parse(authenticatedUser.userLikedVideos)
-			});
+			if(authenticatedUser.userLikedVideos){
+				this.setState({
+					userLikedVideos: authenticatedUser.userLikedVideos
+				});
+			}
 		}
 	}
 
