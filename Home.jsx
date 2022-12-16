@@ -5,7 +5,6 @@ import { Video } from 'expo-av';
 import Styles from './Styles.js';
 import { Button, RadioButton, Searchbar, Menu } from 'react-native-paper';
 import VideoComponent from './VideoComponent.jsx';
-import ReadMore from '@kangyoosam/react-native-readmore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 class Home extends React.Component {
@@ -217,11 +216,6 @@ class Home extends React.Component {
 				    		<View style={{...Styles.pad}}>
 								<View style={{ ...Styles.flex, ...Styles.xSpaceBetween }}>
 									<View style={{ maxWidth: 160 }}>
-										<ReadMore
-											numberOfLines={1}
-										>
-											<Text style={Styles.subHeading}>{video.title}</Text>
-										</ReadMore>
 									</View>
 									{video.uploadedBy._id ?
 										<View>

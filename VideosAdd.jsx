@@ -3,6 +3,7 @@ import { ImageBackground, Text, View, Button as TextButton, Image, ScrollView, A
 import { Video } from 'expo-av';
 import * as ImagePicker from 'expo-image-picker';
 import { Button, TextInput } from 'react-native-paper';
+import Styles from './Styles.js';
 
 function createFormData(title, video, thumbnail){
   const data = new FormData();

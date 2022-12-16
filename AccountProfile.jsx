@@ -5,7 +5,6 @@ import Styles from './Styles.js';
 import { Button, RadioButton, Searchbar, Menu, Headline } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import VideoComponent from './VideoComponent.jsx';
-import ReadMore from '@kangyoosam/react-native-readmore';
 
 class AccountProfile extends React.Component {
 	constructor(props){
@@ -324,11 +323,6 @@ class AccountProfile extends React.Component {
 							    		<View key={video._id} style={{width: 300}}>
 								    		<View style={{...Styles.pad}}>
 												<View style={{ maxWidth: 300 }}>
-													<ReadMore
-														numberOfLines={1}
-													>
-														<Text style={Styles.subHeading}>{video.title}</Text>
-													</ReadMore>
 												</View>
 												{this.state.isCurrentUser ?
 													<Button icon="trash-can" onPress={() => this.handleDeleteVideo(video)}>
@@ -369,11 +363,6 @@ class AccountProfile extends React.Component {
 								    		<View style={{...Styles.pad}}>
 												<View style={{ ...Styles.flex, ...Styles.xSpaceBetween }}>
 													<View style={{ maxWidth: 160 }}>
-														<ReadMore
-															numberOfLines={1}
-														>
-															<Text style={Styles.subHeading}>{video.title}</Text>
-														</ReadMore>
 													</View>
 													{video.uploadedBy._id ?
 														<View>
