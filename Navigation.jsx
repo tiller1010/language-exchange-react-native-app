@@ -8,10 +8,10 @@ class Navigation extends React.Component {
 		  this.state = {
 		    index: 0,
 		    routes: [
-				{key: 'Home', title: 'Home', icon: 'home'},
-				{key: 'VideosIndex', title: 'Videos', icon: 'play'},
-				{key: 'VideosAdd', title: 'Add Video', icon: 'plus'},
-				{key: 'AccountProfile', title: 'Account Profile', icon: 'account'}
+				{key: 'Home', title: 'Home', unfocusedIcon: 'home', focusedIcon: 'home'},
+				{key: 'VideosIndex', title: 'Videos', unfocusedIcon: 'play', focusedIcon: 'play'},
+				{key: 'VideosAdd', title: 'Add Video', unfocusedIcon: 'plus', focusedIcon: 'plus'},
+				{key: 'AccountProfile', title: 'Account Profile', unfocusedIcon: 'account', focusedIcon: 'account'}
 			]
 		}
 		this.handleIndexChange = this.handleIndexChange.bind(this);
@@ -31,6 +31,7 @@ class Navigation extends React.Component {
 				}}
 				inactiveColor="white"
 				activeColor="black"
+				barStyle={{ backgroundColor: '#9f74e4' }}
 			/>
 		);
 	}

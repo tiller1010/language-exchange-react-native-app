@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import { Text, View, TextInput, Image, Button as TextButton, ScrollView } from 'react-native';
+import { Text, View, Image, Button as TextButton, ScrollView } from 'react-native';
 import { Video } from 'expo-av';
 import Styles from './Styles.js';
 import { Button, RadioButton, Searchbar, Menu } from 'react-native-paper';

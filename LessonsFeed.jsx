@@ -38,7 +38,7 @@ class LessonsFeed extends React.Component {
 					// languageOfTopic,
 				});
 			})
-			.catch((e) => console.log('THIS IS A BIG FAT ERROR MESSAGE', e));
+			.catch((e) => console.log(e));
 	}
 
 	randomTopics(level){
@@ -89,7 +89,7 @@ class LessonsFeed extends React.Component {
 						>{`Level ${level.Level}`}</Button>
 						</>
 					}
-					<View className="pure-u-1">
+					<View>
 					</View>
 					{level.attributes.topics.data ?
 						<View>
@@ -104,7 +104,7 @@ class LessonsFeed extends React.Component {
 							)}
 						</View>
 						:
-						<>{loaded ? <p>No topics</p> : <View><View></View><View></View><View></View></View>}</>
+						<>{loaded ? <Text>No topics</Text> : <View><View></View><View></View><View></View></View>}</>
 					}
 				</View>
 			)
@@ -116,10 +116,10 @@ class LessonsFeed extends React.Component {
 		const { levels, loaded, languageOfTopic, initialLoadView } = this.state;
 
 		return (
-			<View className="fw-container">
+			<View>
 
 				<Text>LessonsFeed</Text>
-				<View className="page-form">
+				<View>
 					{ this.props.SearchFormHeading ? <Text>{this.props.SearchFormHeading}</Text> : '' }
 					{/*
 					<LessonSearchForm

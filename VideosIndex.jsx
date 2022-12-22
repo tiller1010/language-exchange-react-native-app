@@ -203,6 +203,7 @@ class VideosIndex extends React.Component {
 					/>
 					<View style={{...Styles.flex, ...Styles.xCenter}}>
 						<View style={Styles.halfPad}>
+						{/*
 							<Menu
 								anchor={<Button onPress={this.toggleSortControls} icon="tune" mode="contained" labelStyle={{color: 'white'}}>Search & Sort</Button>}
 								visible={this.state.sortControlStatus}
@@ -216,6 +217,7 @@ class VideosIndex extends React.Component {
 								</RadioButton.Group>
 								<Menu.Item icon="close" title="Close" onPress={this.toggleSortControls}/>
 							</Menu>
+						*/}
 						</View>
 						<View style={Styles.halfPad}>
 							<Button icon="magnify" mode="contained" labelStyle={{color: 'white'}} onPress={() =>
