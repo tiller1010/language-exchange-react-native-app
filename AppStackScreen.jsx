@@ -9,6 +9,8 @@ import Topic from './Topic.jsx';
 import Login from './Login.jsx';
 import Register from './Register.jsx';
 import AccountProfile from './AccountProfile.jsx';
+import LessonsFeed from './LessonsFeed.jsx';
+import Chats from './Chats.jsx';
 
 const Stack = createStackNavigator();
 
@@ -31,12 +33,20 @@ class AppStackScreen extends React.Component {
                     component={VideosAdd}
                   />
                   <Stack.Screen
+                    name="Lessons"
+                    component={LessonsFeed}
+                  />
+                  <Stack.Screen
                     name="Level"
                     component={Level}
                   />
                   <Stack.Screen
                     name="Topic"
                     component={Topic}
+                  />
+                  <Stack.Screen
+                    name="Chats"
+                    component={Chats}
                   />
                   <Stack.Screen
                     name="Login"

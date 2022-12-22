@@ -9,8 +9,10 @@ class Navigation extends React.Component {
 		    index: 0,
 		    routes: [
 				{key: 'Home', title: 'Home', unfocusedIcon: 'home', focusedIcon: 'home'},
+				{key: 'Lessons', title: 'Lessons', unfocusedIcon: 'book', focusedIcon: 'book'},
 				{key: 'VideosIndex', title: 'Videos', unfocusedIcon: 'play', focusedIcon: 'play'},
 				{key: 'VideosAdd', title: 'Add Video', unfocusedIcon: 'plus', focusedIcon: 'plus'},
+				{key: 'Chats', title: 'Chats', unfocusedIcon: 'chat', focusedIcon: 'chat'},
 				{key: 'AccountProfile', title: 'Account Profile', unfocusedIcon: 'account', focusedIcon: 'account'}
 			]
 		}

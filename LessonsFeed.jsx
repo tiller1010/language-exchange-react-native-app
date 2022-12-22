@@ -116,7 +116,7 @@ class LessonsFeed extends React.Component {
 		const { levels, loaded, languageOfTopic, initialLoadView } = this.state;
 
 		return (
-			<View>
+			<ScrollView>
 
 				<Text>LessonsFeed</Text>
 				<View>
@@ -139,9 +139,9 @@ class LessonsFeed extends React.Component {
 				{levels.length ?
 					<>
 					{initialLoadView ?
-						<View>
+						<ScrollView horizontal>
 							{this.renderLevels()}
-						</View>
+						</ScrollView>
 						:
 						<>
 							{this.renderLevels()}
@@ -152,7 +152,7 @@ class LessonsFeed extends React.Component {
 					<>{loaded ? <Text>No levels</Text> : <View><View></View><View></View><View></View></View>}</>
 				}
 
-			</View>
+			</ScrollView>
 		);
 	}
 }

@@ -87,7 +87,7 @@ export default class VideoSearchForm extends React.Component {
 
 		return(
 			<View>
-				<Searchbar type="text" placeholder="Search video submissions" onChangeText={(text) => this.setState({keywords: text})} value={this.state.keywords}
+				<Searchbar type="text" placeholder="Search" onChangeText={(text) => this.setState({keywords: text})} value={this.state.keywords}
 					style={{
 						borderWidth: 1,
 						borderColor: 'black'
@@ -116,7 +116,7 @@ export default class VideoSearchForm extends React.Component {
 					<View style={Styles.halfPad}>
 						<Button icon="magnify" mode="contained" labelStyle={{color: 'white'}} onPress={() =>
 							this.props.navigation.navigate('Videos', {keywords: this.state.keywords})
-						}>Search Videos</Button>
+						}>Search</Button>
 					</View>
 				</View>
 			</View>

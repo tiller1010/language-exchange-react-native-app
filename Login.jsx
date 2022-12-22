@@ -132,15 +132,17 @@ class Login extends React.Component {
 						<View>
 							<TextInput label="Password" onChangeText={(text) => this.handlePasswordChange(text)} value={this.state.password} secureTextEntry/>
 						</View>
-						<View>
-						<Button icon="arrow-right" mode="contained" labelStyle={{color: 'white'}} contentStyle={{flexDirection: 'row-reverse'}} onPress={this.handleSubmit}>
-							Login
-						</Button>
-						</View>
 					</View>
-					<Button icon="arrow-right" contentStyle={{flexDirection: 'row-reverse'}} onPress={() =>
-						this.props.navigation.navigate('Register')
-					}>Register</Button>
+					<View style={Styles.pad}>
+							<Button icon="arrow-right" mode="contained" labelStyle={{color: 'white'}} contentStyle={{flexDirection: 'row-reverse'}} onPress={this.handleSubmit}>
+								Login
+							</Button>
+					</View>
+					<View style={Styles.pad}>
+						<Button icon="arrow-right" contentStyle={{flexDirection: 'row-reverse'}} onPress={() =>
+							this.props.navigation.navigate('Register')
+						}>Register</Button>
+					</View>
 					<Button icon="google" contentStyle={{flexDirection: 'row-reverse'}} onPress={this.handleGoogleLogin}>Login with Google</Button>
 				</View>
 			</ScrollView>
