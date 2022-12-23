@@ -2,7 +2,8 @@ import * as React from 'react';
 import { loadStripe } from '@stripe/stripe-js';
 import graphQLFetch from './graphQLFetch.js';
 
-import { Text, View, TextInput, Image, Button as TextButton, ScrollView } from 'react-native';
+import { Text, View, TextInput, Image, Button as TextButton } from 'react-native';
+import { Checkbox } from 'react-native-paper';
 
 export default class PremiumVideoChatListing extends React.Component {
 	constructor(props){
@@ -72,7 +73,7 @@ export default class PremiumVideoChatListing extends React.Component {
 		if(authenticatedUserID){
 			let { timeSlots } = this.state;
 			let timeSlot = timeSlots[timeSlotIndex];
-			let query : string = '';
+			let query = '';
 			if(this.props.view == 'owner'){
 				timeSlot.completed = checked;
 				query = `mutation updatePremiumVideoChatListing($listingID: ID!, $premiumVideoChatListing: PremiumVideoChatListingInputs, $file: Upload){
@@ -124,7 +125,7 @@ export default class PremiumVideoChatListing extends React.Component {
 	}
 
 	async getUserNameByID(userID){
-		const user = await fetch(`/user/${userID}`)
+		const user = await fetch(`${process.env.APP_SERVER_URL}/user/${userID}`)
 			.then((response) => response.json());
 		if (user) {
 			return user.displayName;
@@ -138,70 +139,58 @@ export default class PremiumVideoChatListing extends React.Component {
 
 		switch(this.props.view){
 			case 'owner':
-			// return timeSlots.map((timeSlot) => 
-			// 	<View key={timeSlots.indexOf(timeSlot)} style={{ margin: '10px 0', borderBottom: '1px dotted black' }}>
-			// 		{timeSlot.customerUserID ? 
-			// 			<View>
-			// 				<Text>Video Chat with: {timeSlot.customerDisplayName}</Text>
-			// 				<Text>{timeSlot.date} - {timeSlot.time.convertTo12HourTime()}</Text>
-			// 				{timeSlot.booked && !timeSlot.paid ?
-			// 					<Text>!! CUSTOMER HAS NOT COMPLETED THIS PURCHASE !!</Text>
-			// 					:
-			// 					''
-			// 				}
-			// 				<a className="button" href={`/video-chat?forUserID=${timeSlot.customerUserID}`}>
-			// 					Go to Video Chat
-			// 				</a>
-			// 				<View className="field checkbox" style={{ whiteSpace: 'nowrap' }}>
-			// 					{timeSlot.completed ?
-			// 						<>
-			// 						{/* @ts-ignore */}
-			// 						<input id={`timeSlot${timeSlots.indexOf(timeSlot)}`} type="checkbox" defaultChecked onClick={(e) => this.handleTimeSlotChange(e.target.checked, timeSlots.indexOf(timeSlot))}/>
-			// 						</>
-			// 						:
-			// 						<>
-			// 						{/* @ts-ignore */}
-			// 						<input id={`timeSlot${timeSlots.indexOf(timeSlot)}`} type="checkbox" onClick={(e) => this.handleTimeSlotChange(e.target.checked, timeSlots.indexOf(timeSlot))}/>
-			// 						</>
-			// 					}
-			// 					{/* @ts-ignore */}
-			// 					<Text htmlFor={`timeSlot${timeSlots.indexOf(timeSlot)}`}>Mark Completed</Text>
-			// 				</View>
-			// 			</View>
-			// 			:
-			// 			<>
-			// 				{/* @ts-ignore */}
-			// 				<View style={{ margin: '10px 0', minHeight: '36px', display: 'inline-flex', alignItems: 'center' }}>
-			// 					<Text>Available &nbsp;{timeSlot.date} - {timeSlot.time.convertTo12HourTime()}</Text>
-			// 				</View>
-			// 			</>
-			// 		}
-			// 	</View>
-			// );
+			return timeSlots.map((timeSlot) => 
+				<View key={timeSlots.indexOf(timeSlot)} style={{ margin: '10px 0', borderBottom: '1px dotted black' }}>
+					{timeSlot.customerUserID ? 
+						<View>
+							<Text>Video Chat with: {timeSlot.customerDisplayName}</Text>
+							<Text>{timeSlot.date} - {timeSlot.time.convertTo12HourTime()}</Text>
+							{timeSlot.booked && !timeSlot.paid ?
+								<Text>!! CUSTOMER HAS NOT COMPLETED THIS PURCHASE !!</Text>
+								:
+								<Text></Text>
+							}
+							<a className="button" href={`/video-chat?forUserID=${timeSlot.customerUserID}`}>
+								Go to Video Chat
+							</a>
+							<View className="field checkbox" style={{ whiteSpace: 'nowrap' }}>
+								<Checkbox
+									status={timeSlot.completed ? 'checked' : 'unchecked'}
+									onPress={(e) => {
+										this.handleTimeSlotChange(timeSlot.completed, timeSlots.indexOf(timeSlot))
+									}}
+								/>
+								<Text htmlFor={`timeSlot${timeSlots.indexOf(timeSlot)}`}>Mark Completed</Text>
+							</View>
+						</View>
+						:
+						<>
+							{/* @ts-ignore */}
+							<View style={{ margin: '10px 0', minHeight: '36px', display: 'inline-flex', alignItems: 'center' }}>
+								<Text>Available &nbsp;{timeSlot.date} - {timeSlot.time.convertTo12HourTime()}</Text>
+							</View>
+						</>
+					}
+				</View>
+			);
 			case 'customer':
-			// return timeSlots.map((timeSlot) => 
-			// 	<View key={timeSlots.indexOf(timeSlot)}>
-			// 		{timeSlot.customerUserID ?
-			// 			''
-			// 			:
-			// 			<View className="field checkbox" style={{ whiteSpace: 'nowrap' }}>
-			// 				{timeSlot.booked ?
-			// 					<>
-			// 					{/* @ts-ignore */}
-			// 					<input id={`timeSlot${timeSlots.indexOf(timeSlot)}`} type="checkbox" defaultChecked onClick={(e) => this.handleTimeSlotChange(e.target.checked, timeSlots.indexOf(timeSlot))}/>
-			// 					</>
-			// 					:
-			// 					<>
-			// 					{/* @ts-ignore */}
-			// 					<input id={`timeSlot${timeSlots.indexOf(timeSlot)}`} type="checkbox" onClick={(e) => this.handleTimeSlotChange(e.target.checked, timeSlots.indexOf(timeSlot))}/>
-			// 					</>
-			// 				}
-			// 				{/* @ts-ignore */}
-			// 				<label htmlFor={`timeSlot${timeSlots.indexOf(timeSlot)}`}>{timeSlot.date} - {timeSlot.time.convertTo12HourTime()}</label>
-			// 			</View>
-			// 		}
-			// 	</View>
-			// );
+			return timeSlots.map((timeSlot) => 
+				<View key={timeSlots.indexOf(timeSlot)}>
+					{timeSlot.customerUserID ?
+						<Text></Text>
+						:
+						<View className="field checkbox" style={{ whiteSpace: 'nowrap' }}>
+							<Checkbox
+								status={timeSlot.booked ? 'checked' : 'unchecked'}
+								onPress={(e) => {
+									this.handleTimeSlotChange(timeSlot.booked, timeSlots.indexOf(timeSlot))
+								}}
+							/>
+							<label htmlFor={`timeSlot${timeSlots.indexOf(timeSlot)}`}>{timeSlot.date} - {timeSlot.time.convertTo12HourTime()}</label>
+						</View>
+					}
+				</View>
+			);
 		}
 	}
 
@@ -331,7 +320,7 @@ export default class PremiumVideoChatListing extends React.Component {
 					<Text>{price}&nbsp;{currency}</Text>
 				</View>
 				<View className="thumbnail-preview img-container">
-					<Image source={{uri: thumbnailSrc}}
+					<Image source={{uri: process.env.APP_SERVER_URL + '/' + thumbnailSrc}}
 						style={{height: 400, width: '100%'}}
 					/>
 				</View>

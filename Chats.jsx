@@ -36,7 +36,11 @@ class Chats extends React.Component {
 				<View className="pure-u-g">
 
 					<View className="desktop-100">
-						<PremiumVideoChatListingFeed authenticatedUserID={this.state.authenticatedUserID} SearchFormHeading="Chats with native speakers"/>
+						<PremiumVideoChatListingFeed
+							authenticatedUserID={this.state.authenticatedUserID}
+							SearchFormHeading="Chats with native speakers"
+							navigation={this.props.navigation}
+						/>
 					</View>
 
 			    </View>

@@ -58,8 +58,8 @@ class Login extends React.Component {
 	async handleSubmit(){
 		const state = {...this.state};
 		if(state.displayName && state.password){
-			console.log('Fetching from:', process.env.APP_SERVER_URL);
-			await fetch(`${process.env.APP_SERVER_URL}/react-native-login`, {
+			console.log('Fetching from:', 'http://192.168.1.55:3000');
+			await fetch(`${'http://192.168.1.55:3000'}/react-native-login`, {
 				method: 'POST',
 				headers: {
 					"Content-Type": "application/json"

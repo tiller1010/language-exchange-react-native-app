@@ -12,12 +12,11 @@ export default class VideoSearchForm extends React.Component {
 		let state = {
 			keywords: '',
 			languageOfTopic: '',
-			sortControlStatus: 'closed',
+			sortControlStatus: '',
 			sort: 'Recent'
 		}
 		this.state = state;
 		this.toggleSortControls = this.toggleSortControls.bind(this);
-		this.handleKeywordsChange = this.handleKeywordsChange.bind(this);
 		this.handleSortChange = this.handleSortChange.bind(this);
 	}
 
@@ -41,22 +40,6 @@ export default class VideoSearchForm extends React.Component {
 		}
 	}
 
-	// toggleSortControls(){
-	// 	let { sortControlStatus } = this.state;
-	// 	let newStatus = sortControlStatus === SortControlStatus.open ? SortControlStatus.closed : SortControlStatus.open;
-	// 	this.setState({
-	// 		sortControlStatus: newStatus
-	// 	});
-	// }
-
-	handleKeywordsChange(event){
-		this.setState({
-			keywords: event.target.value
-		});
-	}
-
-
-
 	toggleSortControls(){
 		let newStatus = this.state.sortControlStatus ? '' : 'visible';
 		this.setState({
@@ -72,14 +55,6 @@ export default class VideoSearchForm extends React.Component {
 			this.props.navigation.navigate('Videos', {sort: this.state.sort, keywords: this.state.keywords || ''});
 		});
 	}
-
-	// handleSortChange(event){
-	// 	this.setState({
-	// 		sort: event.target.value
-	// 	});
-	// 	// This approach triggers the onSubmit handler
-	// 	event.target.form.querySelector('button[type="submit"]').click();
-	// }
 
 	render(){
 
@@ -97,10 +72,9 @@ export default class VideoSearchForm extends React.Component {
 				/>
 				<View style={{...Styles.flex, ...Styles.xCenter}}>
 					<View style={Styles.halfPad}>
-					{/*
 						<Menu
 							anchor={<Button onPress={this.toggleSortControls} icon="tune" mode="contained" labelStyle={{color: 'white'}}>Search & Sort</Button>}
-							visible={this.state.sortControlStatus}
+							visible={sortControlStatus}
 						>
 							<RadioButton.Group>
 								<RadioButton.Item label="All" name="sort" value="" status={this.state.sort === '' ? 'checked' : 'unchecked'} onPress={() => this.handleSortChange('')}/>
@@ -111,7 +85,6 @@ export default class VideoSearchForm extends React.Component {
 							</RadioButton.Group>
 							<Menu.Item icon="close" title="Close" onPress={this.toggleSortControls}/>
 						</Menu>
-					*/}
 					</View>
 					<View style={Styles.halfPad}>
 						<Button icon="magnify" mode="contained" labelStyle={{color: 'white'}} onPress={() =>

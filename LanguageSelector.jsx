@@ -54,16 +54,15 @@ export default function LanguageSelector(props) {
 	languagesArray = languagesArray.sort((a, b) => a.languageName.localeCompare(b.languageName));
 
 	return (
-		<View className={`field dropdown ${props.className || ''}`}>
-			<Text htmlFor={id}>Language</Text>
+		<View>
 			<Menu
 				anchor={<Button onPress={() => toggleLanguageControls(languageControlStatus ? '' : 'visible')} icon="tune" mode="contained" labelStyle={{color: 'white'}}>Language</Button>}
 				visible={languageControlStatus}
 			>
 				<RadioButton.Group>
-					<RadioButton.Item label="Select a language" value={''} onPress={onChange} />
+					<RadioButton.Item label="Select a language" value={''} onPress={(e) => onChange(e)} />
 					{languagesArray.map((lang) =>
-						<RadioButton.Item label={lang.languageName} key={lang.langCode} value={lang.languageName} onPress={onChange} />
+						<RadioButton.Item label={lang.languageName} key={lang.langCode} value={lang.languageName} onPress={(e) => onChange(e)} />
 					)}
 				</RadioButton.Group>
 				<Menu.Item icon="close" title="Close" onPress={() => toggleLanguageControls(languageControlStatus ? '' : 'visible')}/>

@@ -3,6 +3,7 @@ import graphQLFetch from './graphQLFetch.js';
 import LanguageSelector from './LanguageSelector.jsx';
 import { Text, View, TextInput, Image, Button as TextButton, ScrollView } from 'react-native';
 import { Button, RadioButton, Searchbar, Menu } from 'react-native-paper';
+import Styles from './Styles.js';
 
 export default class LessonSearchForm extends React.Component {
 	constructor(props){
@@ -35,7 +36,7 @@ export default class LessonSearchForm extends React.Component {
 	}
 
 	handleLanguageChange(event) {
-		this.setState({ languageOfTopic: event.target.value });
+		this.setState({ languageOfTopic: event.value });
 	}
 
 	async handleSearchSubmit(event) {
@@ -109,23 +110,22 @@ export default class LessonSearchForm extends React.Component {
 		const { topicQuery, languageOfTopic } = this.state;
 
 		return(
-			<View className="fw-form search-form">
-				<View className="flex-container flex-vertical-stretch">
-					<View className="field text tablet-100">
-						<Text htmlFor="topicQueryField">Search</Text>
-						<Searchbar type="text" placeholder="Search" onChangeText={(text) => this.setState({topicQuery: text})} value={this.state.topicQuery}
-							style={{
-								borderWidth: 1,
-								borderColor: 'black'
-							}}
-							onIconPress={this.handleSearchSubmit}
-							onSubmitEditing={this.handleSearchSubmit}
-						/>
+			<View>
+				<View>
+					<Searchbar type="text" placeholder="Search" onChangeText={(text) => this.setState({topicQuery: text})} value={this.state.topicQuery}
+						style={{
+							borderWidth: 1,
+							borderColor: 'black'
+						}}
+						onIconPress={this.handleSearchSubmit}
+						onSubmitEditing={this.handleSearchSubmit}
+					/>
+				</View>
+				<View style={{...Styles.flex, ...Styles.xCenter}}>
+					<View style={Styles.halfPad}>
+						<LanguageSelector name="languageOfTopic" id="lessonContent_languageOfTopicField" onChange={this.handleLanguageChange} value={languageOfTopic} required={false}/>
 					</View>
-					<View className="flex-container tablet-100" style={{ flexWrap: 'nowrap' }}>
-						<View className="tablet-100">
-							<LanguageSelector name="languageOfTopic" id="lessonContent_languageOfTopicField" onChange={this.handleLanguageChange} value={languageOfTopic} required={false}/>
-						</View>
+					<View style={Styles.halfPad}>
 						<Button icon="magnify" mode="contained" labelStyle={{color: 'white'}} onPress={this.handleSearchSubmit}>
 							Search
 						</Button>

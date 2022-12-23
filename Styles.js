@@ -64,6 +64,9 @@ const Styles = StyleSheet.create({
 	subHeading: {
 		fontSize: 20,
 		fontWeight: 'bold'
+	},
+	textWhite: {
+		color: '#fff',
 	}
 });
 

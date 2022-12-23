@@ -33,7 +33,6 @@ class LessonsFeed extends React.Component {
 			.then(res => {
 				const data = res.data;
 				const levels = data.data;
-				// console.log(data)
 				this.setState({
 					levels,
 					loaded: true,
@@ -73,39 +72,41 @@ class LessonsFeed extends React.Component {
 		return (
 			levels.map((level) => 
 				<View key={level.id}>
-					{initialLoadView ?
-						<>
-						<Text>{level.attributes.Level.replace(/\d|\s/g, '')}</Text>
+					<View style={{ ...Styles.pad, width: 400 }}>
+						{initialLoadView ?
+							<>
+							<Text>{level.attributes.Level.replace(/\d|\s/g, '')}</Text>
+							<View>
+								<Button icon="arrow-right" onPress={() => this.setState({ languageOfTopic: level.attributes.Level.replace(/\d|\s/g, '') })}>
+									Load more {level.attributes.Level.replace(/\d|\s/g, '')}
+								</Button>
+							</View>
+							</>
+							:
+							<>
+							<Text style={Styles.subheading}>{level.attributes.Level}</Text>
+							<Button icon="arrow-right" mode="outlined" contentStyle={{flexDirection: 'row-reverse'}} onPress={() =>
+									this.props.navigation.navigate('Level', {levelID: level.id})
+								}
+							>{`Level ${level.attributes.Level}`}</Button>
+							</>
+						}
 						<View>
-							<Button icon="arrow-right" onPress={() => this.setState({ languageOfTopic: level.attributes.Level.replace(/\d|\s/g, '') })}>
-								Load more {level.attributes.Level.replace(/\d|\s/g, '')}
-							</Button>
 						</View>
-						</>
-						:
-						<>
-						<Text>{level.attributes.Level}</Text>
-						<Button icon="arrow-right" mode="outlined" contentStyle={{flexDirection: 'row-reverse'}} onPress={() =>
-								this.props.navigation.navigate('Level', {levelID: level.id})
-							}
-						>{`Level ${level.attributes.Level}`}</Button>
-						</>
-					}
-					<View>
-					</View>
-					{level.attributes.topics.data ?
-						<View>
-							{this.randomTopics(level).map((topic) =>
-								<View key={topic.id}>
-									<View>
-										<TopicLink topic={topic} levelID={level.id} showChallenge={showChallenge} navigation={this.props.navigation}/>
+						{level.attributes.topics.data ?
+							<View>
+								{this.randomTopics(level).map((topic) =>
+									<View key={topic.id} style={Styles.pad}>
+										<View>
+											<TopicLink topic={topic} levelID={level.id} showChallenge={showChallenge} navigation={this.props.navigation}/>
+										</View>
 									</View>
-								</View>
-							)}
-						</View>
-						:
-						<>{loaded ? <Text>No topics</Text> : <View><View></View><View></View><View></View></View>}</>
-					}
+								)}
+							</View>
+							:
+							<>{loaded ? <Text>No topics</Text> : <View><View></View><View></View><View></View></View>}</>
+						}
+					</View>
 				</View>
 			)
 		);
@@ -117,39 +118,41 @@ class LessonsFeed extends React.Component {
 
 		return (
 			<ScrollView>
+				<View style={Styles.pad}>
 
-				<Text>LessonsFeed</Text>
-				<View>
-					{ this.props.SearchFormHeading ? <Text>{this.props.SearchFormHeading}</Text> : '' }
-					<LessonSearchForm
-						onSubmit={this.onSeachSubmitCallback}
-						languageOfTopic={languageOfTopic || null}
-					/>
-					{!this.props.HideClearFilters ?
-						<View>
-								<Text>Clear filters</Text>
-						</View>
-						:
-						''
-					}
-				</View>
+					<Text style={Styles.heading}>Lessons Feed</Text>
+					<View>
+						{ this.props.SearchFormHeading ? <Text>{this.props.SearchFormHeading}</Text> : '' }
+						<LessonSearchForm
+							onSubmit={this.onSeachSubmitCallback}
+							languageOfTopic={languageOfTopic || null}
+						/>
+						{!this.props.HideClearFilters ?
+							<View>
+									<Text>Clear filters</Text>
+							</View>
+							:
+							''
+						}
+					</View>
 
-				{levels.length ?
-					<>
-					{initialLoadView ?
-						<ScrollView horizontal>
-							{this.renderLevels()}
-						</ScrollView>
-						:
+					{levels.length ?
 						<>
-							{this.renderLevels()}
+						{initialLoadView ?
+							<ScrollView horizontal>
+								{this.renderLevels()}
+							</ScrollView>
+							:
+							<>
+								{this.renderLevels()}
+							</>
+						}
 						</>
+						:
+						<>{loaded ? <Text>No levels</Text> : <View><View></View><View></View><View></View></View>}</>
 					}
-					</>
-					:
-					<>{loaded ? <Text>No levels</Text> : <View><View></View><View></View><View></View></View>}</>
-				}
 
+				</View>
 			</ScrollView>
 		);
 	}

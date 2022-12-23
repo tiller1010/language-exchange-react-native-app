@@ -35,6 +35,7 @@ class VideosIndex extends React.Component {
 		this.handleChangePage = this.handleChangePage.bind(this);
 		this.handleSearch = this.handleSearch.bind(this);
 		this.handleUserProfileNavigation = this.handleUserProfileNavigation.bind(this);
+		this.currentUserHasLikedVideo = this.currentUserHasLikedVideo.bind(this);
 	}
 
 	async componentDidMount(){
@@ -120,6 +121,16 @@ class VideosIndex extends React.Component {
 		this.props.navigation.navigate('Account Profile', { user });
 	}
 
+	currentUserHasLikedVideo(video){
+		let liked = false;
+		this.state.userLikedVideos.forEach((userLikedVideo) => {
+			if(userLikedVideo._id === video._id){
+				liked = true;
+			}
+		});
+		return liked;
+	}
+
 	render(){
 
 		var apiBaseURL = process.env.APP_SERVER_URL;
@@ -131,6 +142,7 @@ class VideosIndex extends React.Component {
 					<Text style={Styles.heading}>Videos</Text>
 					<VideoSearchForm
 						keywords={keywords}
+						navigation={this.props.navigation}
 					/>
 				    <View style={{...Styles.flex, ...Styles.xCenter}}>
 					    <View style={Styles.halfPad}>
@@ -196,8 +208,8 @@ class VideosIndex extends React.Component {
 											_id={video._id}
 											title={video.title}
 											languageOfTopic={video.languageOfTopic}
-											src={video.src}
-											thumbnailSrc={video.thumbnailSrc}
+											src={process.env.APP_SERVER_URL + '/' + video.src}
+											thumbnailSrc={video.thumbnailSrc ? process.env.APP_SERVER_URL + '/' + video.thumbnailSrc : false}
 											uploadedBy={video.uploadedBy}
 											likes={video.likes}
 											likedByCurrentUser={this.currentUserHasLikedVideo(video)}

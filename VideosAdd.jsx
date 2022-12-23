@@ -1,5 +1,5 @@
 import React from 'react';
-import { ImageBackground, Text, View, Button as TextButton, Image, ScrollView, Alert } from 'react-native';
+import { ImageBackground, Text, View, Button as TextButton, Image, ScrollView, Alert, Platform } from 'react-native';
 import { Video } from 'expo-av';
 import * as ImagePicker from 'expo-image-picker';
 import { Button, TextInput } from 'react-native-paper';

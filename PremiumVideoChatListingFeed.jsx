@@ -4,6 +4,7 @@ import graphQLFetch from './graphQLFetch.js';
 import LanguageSelector from './LanguageSelector.jsx';
 import { Button, RadioButton, Searchbar, Menu } from 'react-native-paper';
 import { Text, View, TextInput, Image, Button as TextButton, ScrollView } from 'react-native';
+import Styles from './Styles.js';
 
 export default class PremiumVideoChatListingFeed extends React.Component {
 	constructor(props){
@@ -122,12 +123,11 @@ export default class PremiumVideoChatListingFeed extends React.Component {
 
 		return(
 			<View>
-				<View className="page-form" style={{ marginBottom: 60 }}>
-					{ this.props.SearchFormHeading ? <Text style={{ textAlign: 'right' }}>{this.props.SearchFormHeading}</Text> : '' }
-					<View className="fw-form search-form">
-						<View className="flex-container flex-vertical-stretch">
-							<View className="field text tablet-100">
-								<Text htmlFor="topicField">Topic</Text>
+				<View>
+					<View style={Styles.pad}>
+						<View>
+							<View>
+								{ this.props.SearchFormHeading ? <Text style={Styles.heading}>{this.props.SearchFormHeading}</Text> : '' }
 								<Searchbar type="text" placeholder="Search" onChangeText={(text) => this.setState({topic: text})} value={topic}
 									style={{
 										borderWidth: 1,
@@ -137,11 +137,13 @@ export default class PremiumVideoChatListingFeed extends React.Component {
 									onSubmitEditing={this.handleSearchSubmit}
 								/>
 							</View>
-							<View className="flex-container tablet-100" style={{ flexWrap: 'nowrap' }}>
-								<View className="tablet-100">
+							<View style={{...Styles.flex, ...Styles.xCenter}}>
+								<View style={Styles.halfPad}>
 									<LanguageSelector name="languageOfTopic" id="videoChat_languageOfTopicField" onChange={this.handleLanguageChange} value={languageOfTopic} required={false}/>
 								</View>
-								<Button icon="magnify" mode="contained" labelStyle={{color: 'white'}} onPress={this.handleSubmit}>Search</Button>
+								<View style={Styles.halfPad}>
+									<Button icon="magnify" mode="contained" labelStyle={{color: 'white'}} onPress={this.handleSubmit}>Search</Button>
+								</View>
 							</View>
 						</View>
 					</View>
@@ -163,7 +165,14 @@ export default class PremiumVideoChatListingFeed extends React.Component {
 					<ScrollView horizontal>
 						{premiumVideoChatListings.map((listing) =>
 							<View key={premiumVideoChatListings.indexOf(listing)}>
-								<PremiumVideoChatListing premiumVideoChatListing={listing} authenticatedUserID={authenticatedUserID} view={authenticatedUserID == listing.userID ? 'owner' : 'customer'}/>
+								<View style={{ ...Styles.pad, width: 400 }}>
+									<PremiumVideoChatListing
+										premiumVideoChatListing={listing}
+										authenticatedUserID={authenticatedUserID}
+										view={authenticatedUserID == listing.userID ? 'owner' : 'customer'}
+										navigation={this.props.navigation}
+									/>
+								</View>
 							</View>
 						)}
 					</ScrollView>
