@@ -16,35 +16,24 @@ class Level extends React.Component {
 	async componentDidMount(){
 		if(this.props.route.params){
 			if(this.props.route.params.levelID){
-			console.log('Fetching from:', process.env.STRAPI_URL);
-			axios.get(`${process.env.STRAPI_URL}/levels/${this.props.route.params.levelID}`)
-				.then(res => {
-					this.setState({
-						topics: res.data.topics,
-						levelID: this.props.route.params.levelID
-					});
+
+				const newState = {
+					levelID: this.props.route.params.levelID,
+				};
+				this.setState(newState, () => {
+					axios.get(`${process.env.STRAPI_URL}/levels/${this.props.route.params.levelID}?populate[topics][populate][0]=FeaturedMedia%2Cchallenges`)
+						.then(res => {
+							const data = res.data;
+							const level = data.data;
+							const topics = level.attributes.topics.data;
+							this.setState({
+								topics,
+								loaded: true,
+							});
+						})
 				})
 			}
 		}
-
-		axios.get(`${process.env.STRAPI_URL}/challenges`)
-			.then(res => {
-				if(res.data){
-					res.data.forEach((challenge) => {
-						if(challenge.topic){
-							var topics = this.state.topics;
-							topics.forEach((topic) => {
-								if(topic.id === challenge.topic.id){
-									topic.challenges = topic.challenges ? topic.challenges.concat(challenge) : [ challenge ];
-									this.setState({
-										topics
-									});
-								}
-							});
-						}
-					})
-				}
-			})
 	}
 
 	renderMedia(topic){
@@ -65,7 +54,7 @@ class Level extends React.Component {
 	}
 
 	randomChallenges(topic){
-		return topic.challenges.sort(() => .5 - Math.random()).slice(0, 5);
+		return topic.attributes.challenges.data.sort(() => .5 - Math.random()).slice(0, 5);
 	}
 
 	render(){
@@ -76,9 +65,9 @@ class Level extends React.Component {
 			    		<View key={topic.id} style={{...Styles.flex, ...Styles.column, ...Styles.fullWidth, ...Styles.xCenter}}>			    		
 	    					<Button icon="arrow-right" mode="outlined" contentStyle={{flexDirection: 'row-reverse'}} onPress={() =>
 								this.props.navigation.navigate('Topic', {levelID: this.state.levelID, topicID: topic.id})
-							}>{topic.Topic}</Button>
+							}>{topic.attributes.Topic}</Button>
 							{this.renderMedia(topic)}
-				    		{topic.challenges ?
+				    		{topic.attributes.challenges.data ?
 								<ScrollView horizontal>
 						    		<View style={{...Styles.pad, width: 400}}>
 					    				<Text style={{...Styles.subHeading, textAlign: 'center'}}>Need a quick refresher? Slide forward to preview challenges.</Text>
@@ -86,8 +75,8 @@ class Level extends React.Component {
 					    			{this.randomChallenges(topic).map((challenge) =>
 					    				<View key={`${topic.id}_${challenge.id}`} style={{...Styles.flex, ...Styles.column, ...Styles.fullWidth, ...Styles.xCenter}}>
 						    				<View style={Styles.pad}>
-							    				<Text style={Styles.heading}>{challenge.Title}</Text>
-						    					<Text>{challenge.Content}</Text>
+							    				<Text style={Styles.heading}>{challenge.attributes.Title}</Text>
+						    					<Text>{challenge.attributes.Content}</Text>
 					    					</View>
 				    					</View>
 				    				)}

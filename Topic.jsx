@@ -5,6 +5,8 @@ import { Video } from 'expo-av';
 import Styles from './Styles.js';
 import { Button, TextInput } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import VideoComponent from './VideoComponent.jsx';
+import AudioComponent from './AudioComponent.jsx';
 
 function shuffleArray(array) {
 	let newArray = [...array];
@@ -33,54 +35,27 @@ class Topic extends React.Component {
 		if(this.props.route.params){
 			if(this.props.route.params.topicID){
 				console.log('Fetching from:', process.env.STRAPI_URL);
-				axios.get(`${process.env.STRAPI_URL}/topics/${this.props.route.params.topicID}`)
+				axios.get(`${process.env.STRAPI_URL}/topics/${this.props.route.params.topicID}?populate[challenges][populate][0]=FeaturedMedia`)
 					.then(res => {
 						if(res.data){
+							const topic = res.data.data.attributes.Topic;
 							this.setState({
-								topic: res.data.Topic
-							})
+								topic,
+								challenges: res.data.data.attributes.challenges.data,
+								loaded: true,
+							});
 						}
-					})
-
-				axios.get(`${process.env.STRAPI_URL}/challenges`)
-					.then(res => {
-						if(res.data){
-							res.data.forEach((challenge) => {
-								if(challenge.topic){
-									var challenges = this.state.challenges;
-									if(this.props.route.params.topicID == challenge.topic.id){
-										challenges = challenges.concat(challenge);
-										this.setState({
-											challenges
-										}, async () => {
-											// Check if current user has completed this topic
-											var authenticatedUser = await AsyncStorage.getItem('@user');
-											if(authenticatedUser){
-												authenticatedUser = JSON.parse(authenticatedUser);
-											} else {
-												authenticatedUser = { completedTopics: [] };
-											}
-											let completed = false;
-											authenticatedUser.completedTopics.forEach((topic) => {
-												if(topic.id == this.props.route.params.topicID){
-													completed = true;
-												}
-											});
-											if(completed){
-												let completedChalleges = [];
-												this.state.challenges.forEach((stateChallenge) => {
-													stateChallenge.answered = 'correct';
-													completedChalleges.push(stateChallenge);
-												});
-												this.setState({
-													challenges: completedChalleges,
-													allChallengesAnswered: true
-												});
-											}
-										});
-									}
-								}
-							})
+						if(this.props.completed){
+							let completedChalleges = [];
+							this.state.challenges.forEach((stateChallenge) => {
+								stateChallenge.answered = 'correct';
+								completedChalleges.push(stateChallenge);
+							});
+							this.setState({
+								challenges: completedChalleges,
+								inChallengeMode: true,
+								allChallengesAnswered: true,
+							});
 						}
 					})
 			}
@@ -134,29 +109,42 @@ class Topic extends React.Component {
 	}
 
 	renderMedia(challenge){
-		if(challenge.FeaturedMedia){
-			if(challenge.FeaturedMedia.length){
-				switch(challenge.FeaturedMedia[0].mime){
+		if(challenge.attributes.FeaturedMedia){
+			if(challenge.attributes.FeaturedMedia.data){
+				switch(challenge.attributes.FeaturedMedia.data.attributes.mime){
 					case 'image/jpeg':
 						return (
 							<View style={Styles.fullWidth}>
-								<Image source={{uri: `${process.env.STRAPI_URL}${challenge.FeaturedMedia[0].url}`}}
+								<Image source={{uri: `${process.env.STRAPI_PUBLIC_URL}${challenge.attributes.FeaturedMedia.data.attributes.url}`}}
 									style={{height: 400, width: '100%'}}
 								/>
 							</View>
 						);
 					case 'video/mp4':
 						return (
-							<Video
-								source={{uri: `${process.env.STRAPI_URL}${challenge.FeaturedMedia[0].url}`}}
-								ref={(ref) => {
-									this.player = ref
-								}}
-								style={{height: 225, width: '100%'}}
-								// usePoster={true}
-								useNativeControls={true}
-								// overrideFileExtensionAndroid="mp4"
-							/>
+							<VideoComponent video={{ src: `${process.env.STRAPI_PUBLIC_URL}${challenge.attributes.FeaturedMedia.data.attributes.url}` }}/>
+						);
+					case 'audio/wav':
+					case 'audio/mp3':
+					case 'audio/mpeg':
+						return (
+							<View style={{
+								position: 'relative',
+								height: 225,
+								width: 400,
+								backgroundImage: `url('${process.env.APP_SERVER_URL + '/' + "/images/videoPlaceholder.png"}')`,
+								backgroundSize: 'contain',
+								backgroundPosition: 'center',
+								backgroundRepeat: 'no-repeat',
+								display: 'flex',
+								alignItems: 'flex-end',
+								justifyContent: 'center',
+								borderRadius: 25,
+								overflow: 'hidden',
+								maxWidth: '100%',
+							}}>
+								<AudioComponent src={`${process.env.STRAPI_PUBLIC_URL}${challenge.attributes.FeaturedMedia.data.attributes.url}`}/>
+							</View>
 						);
 					default:
 						return <Text>Invalid media</Text>
@@ -169,13 +157,13 @@ class Topic extends React.Component {
 		return (
 			<ScrollView>
 			    {this.state.challenges ?
-			    	<ScrollView horizontal>
+			    	<ScrollView horizontal style={{ maxHeight: 100 }}>
 				    	{shuffleArray(this.state.challenges).map((challenge) => 
 				    		<View key={this.state.challenges.indexOf(challenge)}>
 					    		<View style={Styles.pad}>
 					    			<View>
 						    			<Button icon={challenge.answered ? 'check-circle' : ''} labelStyle={challenge.answered ? {color: 'green'} : {}}>
-							    			{challenge.Title}
+							    			{challenge.attributes.Title}
 						    			</Button>
 					    			</View>
 					    		</View>
@@ -209,11 +197,13 @@ class Topic extends React.Component {
 						    			</Button>
 	    								<TextInput mode="outlined" placeholder="Guess meaning" onChangeText={(text) => this.checkAnswerInput(text, challenge)}/>
 							    		<View style={{...Styles.pad, ...Styles.noXPad}}>
-							    			<Text>{challenge.Content}</Text>
+							    			<Text>{challenge.attributes.Content}</Text>
 						    			</View>
 					    			</View>
-					    			{challenge.FeaturedMedia.length ?
-					    				this.renderMedia(challenge)
+					    			{challenge.attributes.FeaturedMedia.data ?
+						    			<View style={{...Styles.flex, ...Styles.column, ...Styles.fullWidth, ...Styles.xCenter}}>
+						    				{this.renderMedia(challenge)}
+						    			</View>
 					    				:
 					    				<Text></Text>
 					    			}
@@ -221,12 +211,12 @@ class Topic extends React.Component {
 						    			<View style={{...Styles.flex, ...Styles.xCenter}}>
 							    			<View style={Styles.halfPad}>
 												<Button icon="magnify" mode="contained" labelStyle={{color: 'white'}} contentStyle={{flexDirection: 'row-reverse'}} onPress={() => 
-											    	this.props.navigation.navigate('Videos', {keywords: challenge.Title})
+											    	this.props.navigation.navigate('Videos', {keywords: challenge.attributes.Title})
 											    }>View others</Button>
 								    		</View>
 							    			<View style={Styles.halfPad}>
 												<Button icon="plus" mode="contained" labelStyle={{color: 'white'}} contentStyle={{flexDirection: 'row-reverse'}} onPress={() => 
-											    	this.props.navigation.navigate('Add Video', {challenge: challenge.Title})
+											    	this.props.navigation.navigate('Add Video', {challenge: challenge.attributes.Title})
 											    }>Submit your own</Button>
 								    		</View>
 							    		</View>

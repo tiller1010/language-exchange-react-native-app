@@ -1,5 +1,5 @@
 module.exports = {
-  name: 'MyApp',
+  name: 'Openeducationapp',
   version: '1.0.0',
   extra: {
     APP_SERVER_URL: process.env.APP_SERVER_URL,

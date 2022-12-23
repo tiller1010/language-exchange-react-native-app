@@ -5,6 +5,8 @@ import { Video } from 'expo-av';
 import Styles from './Styles.js';
 import { Button, RadioButton, Searchbar, Menu } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import VideoComponent from './VideoComponent.jsx';
+import AudioComponent from './AudioComponent.jsx';
 
 // Enable lazy loading
 // const lozadObserver = lozad();
@@ -50,10 +52,7 @@ function renderChallengeMedia(FeaturedMedia){
 				case 'audio/mp3':
 				case 'audio/mpeg':
 					return (
-						{/*
-						<audio height="225" width="400" controls tabIndex="-1" src={`${process.env.STRAPI_PUBLIC_URL}${FeaturedMedia.data.attributes.url}`}>
-						</audio>
-						*/}
+						<AudioComponent video={data.attributes}/>
 					);
 				default:
 					return <Text>Invalid media</Text>
@@ -84,9 +83,9 @@ export default function TopicLink(props) {
 	return (
 		<View>
 			<View className="flex x-space-between y-center" style={{ flexWrap: 'nowrap' }}>
-				<Text className="pad no-y no-left" style={{ margin: 0 }}>{topic.attributes.Topic}</Text>
+				<Text className="pad no-y no-left">{topic.attributes.Topic}</Text>
 				<Button icon="arrow-right" mode="outlined" contentStyle={{flexDirection: 'row-reverse'}} onPress={() =>
-					this.props.navigation.navigate('Topic', {levelID: level.id, topicID: topic.id})
+					props.navigation.navigate('Topic', {levelID, topicID: topic.id})
 				}>{topic.Topic}</Button>
 			</View>
 			{renderTopicMedia(topic.attributes.FeaturedMedia)}

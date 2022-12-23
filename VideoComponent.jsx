@@ -54,7 +54,7 @@ const VideoComponent = (props) => {
 	return(
 		<View>
 			<Video
-				posterSource={{uri: video.thumbnailSrc ? apiBaseURL + '/' + video.thumbnailSrc : apiBaseURL + '/images/videoPlaceholder.png'}}
+				posterSource={{uri: video.thumbnailSrc ? video.thumbnailSrc : apiBaseURL + '/images/videoPlaceholder.png'}}
 				ref={ref}
 				style={{position: 'relative', height: 225, width: '100%', borderRadius: 25, overflow: 'hidden'}}
 				usePoster={true}
@@ -63,7 +63,7 @@ const VideoComponent = (props) => {
 			/>
 			<PlayButton callback={() => {
 				if(ref){
-					ref.current.loadAsync({uri: apiBaseURL + '/' + video.src})
+					ref.current.loadAsync({uri: video.src})
 						.then(() => {
 							ref.current.setState({
 								showPoster: false

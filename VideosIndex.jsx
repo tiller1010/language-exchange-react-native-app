@@ -5,6 +5,8 @@ import { parse as URLParse } from 'search-params';
 import Styles from './Styles.js';
 import { Button, RadioButton, Searchbar, Menu } from 'react-native-paper';
 import VideoComponent from './VideoComponent.jsx';
+import VideoPlayer from './VideoPlayer.jsx';
+import VideoSearchForm from './VideoSearchForm.jsx';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 async function getVideos(url=`${process.env.APP_SERVER_URL}/videos.json`){
@@ -32,8 +34,6 @@ class VideosIndex extends React.Component {
 		this.pagination = this.pagination.bind(this);
 		this.handleChangePage = this.handleChangePage.bind(this);
 		this.handleSearch = this.handleSearch.bind(this);
-		this.toggleSortControls = this.toggleSortControls.bind(this);
-		this.handleSortChange = this.handleSortChange.bind(this);
 		this.handleUserProfileNavigation = this.handleUserProfileNavigation.bind(this);
 	}
 
@@ -105,76 +105,12 @@ class VideosIndex extends React.Component {
 		}
 	}
 
-	toggleSortControls(){
-		let newStatus = this.state.sortControlStatus ? '' : 'visible';
-		this.setState({
-			sortControlStatus: newStatus
-		});
-	}
-
-	handleSortChange(value){
-		this.setState({
-			sort: value,
-			sortControlStatus: ''
-		}, () => {
-			this.handleSearch(`${process.env.APP_SERVER_URL}/videos.json?keywords=${this.state.keywords}&sort=${this.state.sort}`);
-		});
-	}
-
 	pagination(pages){
 		var pageLinks = [];
 		for(var i = 1; i <= pages; i++){
 			pageLinks.push({pageNumber: i});
 		}
 		return pageLinks;
-	}
-
-	async sendLike(video){
-		const newLikedVideo = await fetch(`${process.env.APP_SERVER_URL}/sendLike/${video._id}`)
-			.then(res => res.json())
-			.catch(error => console.log(error));
-		if(newLikedVideo.message){
-			// Display error message if included in response
-			alert(newLikedVideo.message);
-		} else if(newLikedVideo) {
-			// Update the video state to be liked by the current user. Used immediately after liking.
-			newLikedVideo.likedByCurrentUser = true;
-			let newVideos = this.state.videos;
-			newVideos[newVideos.indexOf(video)] = newLikedVideo;
-			// Add video to user's liked videos. Used when a re-render occurs.
-			let newUserLikedVideos = this.state.userLikedVideos;
-			newUserLikedVideos.push(video);
-			this.setState({
-				videos: newVideos,
-				userLikedVideos: newUserLikedVideos
-			});
-		}
-	}
-
-	async removeLike(video){
-		const newUnlikedVideo = await fetch(`${document.location.origin}/removeLike/${video._id}`)
-			.then(res => res.json())
-			.catch(error => console.log(error));
-		if(newUnlikedVideo.message){
-			// Display error message if included in response
-			alert(newUnlikedVideo.message);
-		} else if(newUnlikedVideo) {
-			// Update the video state to remove like from the current user. Used immediately after unliking.
-			newUnlikedVideo.likedByCurrentUser = false;
-			let newVideos = this.state.videos;
-			newVideos[newVideos.indexOf(video)] = newUnlikedVideo;
-			// Remove video from user's liked videos. Used when a re-render occurs.
-			let newUserLikedVideos = [];
-			this.state.userLikedVideos.forEach((userLikedVideo) => {
-				if(userLikedVideo._id != video._id){
-					newUserLikedVideos.push(userLikedVideo);
-				}
-			});
-			this.setState({
-				videos: newVideos,
-				userLikedVideos: newUserLikedVideos
-			});
-		}
 	}
 
 	async handleUserProfileNavigation(userID){
@@ -193,38 +129,9 @@ class VideosIndex extends React.Component {
 			<ScrollView>		
 				<View style={Styles.pad}>	
 					<Text style={Styles.heading}>Videos</Text>
-					<Searchbar type="text" placeholder="Search video submissions" onChangeText={(text) => this.setState({keywords: text})} value={this.state.keywords}
-						style={{
-							borderWidth: 1,
-							borderColor: 'black'
-						}}
-						onIconPress={() => this.handleSearch(`${apiBaseURL}/videos.json?keywords=${this.state.keywords}`)}
-						onSubmitEditing={() => this.handleSearch(`${apiBaseURL}/videos.json?keywords=${this.state.keywords}`)}
+					<VideoSearchForm
+						keywords={keywords}
 					/>
-					<View style={{...Styles.flex, ...Styles.xCenter}}>
-						<View style={Styles.halfPad}>
-						{/*
-							<Menu
-								anchor={<Button onPress={this.toggleSortControls} icon="tune" mode="contained" labelStyle={{color: 'white'}}>Search & Sort</Button>}
-								visible={this.state.sortControlStatus}
-							>
-								<RadioButton.Group>
-									<RadioButton.Item label="All" name="sort" value="" status={this.state.sort === '' ? 'checked' : 'unchecked'} onPress={() => this.handleSortChange('')}/>
-									<RadioButton.Item label="Oldest" name="sort" value="Oldest" status={this.state.sort === 'Oldest' ? 'checked' : 'unchecked'} onPress={() => this.handleSortChange('Oldest')}/>
-									<RadioButton.Item label="Recent" name="sort" value="Recent" status={this.state.sort === 'Recent' ? 'checked' : 'unchecked'} onPress={() => this.handleSortChange('Recent')}/>
-									<RadioButton.Item label="A-Z" name="sort" value="A-Z" status={this.state.sort === 'A-Z' ? 'checked' : 'unchecked'} onPress={() => this.handleSortChange('A-Z')}/>
-									<RadioButton.Item label="Z-A" name="sort" value="Z-A" status={this.state.sort === 'Z-A' ? 'checked' : 'unchecked'} onPress={() => this.handleSortChange('Z-A')}/>
-								</RadioButton.Group>
-								<Menu.Item icon="close" title="Close" onPress={this.toggleSortControls}/>
-							</Menu>
-						*/}
-						</View>
-						<View style={Styles.halfPad}>
-							<Button icon="magnify" mode="contained" labelStyle={{color: 'white'}} onPress={() =>
-								this.handleSearch(`${apiBaseURL}/videos.json?keywords=${this.state.keywords}`)
-							}>Search Videos</Button>
-						</View>
-					</View>
 				    <View style={{...Styles.flex, ...Styles.xCenter}}>
 					    <View style={Styles.halfPad}>
 							<Button icon="refresh" mode="outlined" contentStyle={{flexDirection: 'row-reverse'}} onPress={
@@ -285,38 +192,17 @@ class VideosIndex extends React.Component {
 							{this.state.videos.map((video) => 
 								<View key={video._id}>
 									<View style={Styles.pad}>
-										<View style={{...Styles.flex, ...Styles.xSpaceBetween, ...Styles.yCenter}}>
-											<View style={{ maxWidth: 260 }}>
-											</View>
-											{video.uploadedBy._id ?
-												<View>
-													<TextButton title={`By: ${video.uploadedBy.displayName}`} onPress={() => this.handleUserProfileNavigation(video.uploadedBy._id)}/>
-												</View>
-												:
-												<View>
-													<Text>By: {video.uploadedBy.displayName}</Text>
-												</View>
-											}
-										</View>
-										{video.src ?
-											<View>
-												<VideoComponent video={video}/>
-											</View>
-											:
-											<Text>No Video Source</Text>
-										}
-										<View style={{ ...Styles.flex, ...Styles.xSpaceAround, ...Styles.yCenter }}>
-											<Text>Likes: {video.likes || 0}</Text>
-											{video.likedByCurrentUser ?
-												<Button icon="star" onPress={() => this.removeLike(video)}>
-													Liked
-												</Button>
-												:
-												<Button icon="star-outline" onPress={() => this.sendLike(video)}>
-													Like
-												</Button>
-											}
-										</View>
+										<VideoPlayer
+											_id={video._id}
+											title={video.title}
+											languageOfTopic={video.languageOfTopic}
+											src={video.src}
+											thumbnailSrc={video.thumbnailSrc}
+											uploadedBy={video.uploadedBy}
+											likes={video.likes}
+											likedByCurrentUser={this.currentUserHasLikedVideo(video)}
+											authenticatedUserID={this.state.userID}
+										/>
 									</View>
 								</View>
 							)}

@@ -122,7 +122,7 @@ export default class PremiumVideoChatListingFeed extends React.Component {
 
 		return(
 			<View>
-				<View className="page-form" style={{ marginBottom: '60px' }}>
+				<View className="page-form" style={{ marginBottom: 60 }}>
 					{ this.props.SearchFormHeading ? <Text style={{ textAlign: 'right' }}>{this.props.SearchFormHeading}</Text> : '' }
 					<View className="fw-form search-form">
 						<View className="flex-container flex-vertical-stretch">
@@ -147,14 +147,16 @@ export default class PremiumVideoChatListingFeed extends React.Component {
 					</View>
 					{!this.props.HideClearFilters ?
 						<View>
+						<>
 						{/*
 							<a href="/chats" aria-label="Clear filters" className="button">
 								Clear filters
 							</a>
 						*/}
+						</>
 						</View>
 						:
-						''
+						<Text></Text>
 					}
 				</View>
 				{premiumVideoChatListings.length ?

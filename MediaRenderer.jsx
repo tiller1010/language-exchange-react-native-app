@@ -31,8 +31,8 @@ export default function MediaRenderer(props) {
 		case 'wav':
 			return (
 				<View style={{
-					height: '225px',
-					width: '400px',
+					height: 225,
+					width: 400,
 					backgroundImage: `url('${thumbnailSrc || process.env.APP_SERVER_URL + '/' + "/images/videoPlaceholder.png"}')`,
 					backgroundSize: 'contain',
 					backgroundPosition: 'center',

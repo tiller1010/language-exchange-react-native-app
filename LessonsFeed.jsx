@@ -5,6 +5,8 @@ import { Video } from 'expo-av';
 import Styles from './Styles.js';
 import { Button, RadioButton, Searchbar, Menu } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import TopicLink from './TopicLink.jsx';
+import LessonSearchForm from './LessonSearchForm.jsx';
 
 class LessonsFeed extends React.Component {
 	constructor(props){
@@ -35,7 +37,7 @@ class LessonsFeed extends React.Component {
 				this.setState({
 					levels,
 					loaded: true,
-					// languageOfTopic,
+					languageOfTopic,
 				});
 			})
 			.catch((e) => console.log(e));
@@ -86,7 +88,7 @@ class LessonsFeed extends React.Component {
 						<Button icon="arrow-right" mode="outlined" contentStyle={{flexDirection: 'row-reverse'}} onPress={() =>
 								this.props.navigation.navigate('Level', {levelID: level.id})
 							}
-						>{`Level ${level.Level}`}</Button>
+						>{`Level ${level.attributes.Level}`}</Button>
 						</>
 					}
 					<View>
@@ -96,9 +98,7 @@ class LessonsFeed extends React.Component {
 							{this.randomTopics(level).map((topic) =>
 								<View key={topic.id}>
 									<View>
-										{/*
-										<TopicLink topic={topic} levelID={level.id} showChallenge={showChallenge}/>
-										*/}
+										<TopicLink topic={topic} levelID={level.id} showChallenge={showChallenge} navigation={this.props.navigation}/>
 									</View>
 								</View>
 							)}
@@ -121,12 +121,10 @@ class LessonsFeed extends React.Component {
 				<Text>LessonsFeed</Text>
 				<View>
 					{ this.props.SearchFormHeading ? <Text>{this.props.SearchFormHeading}</Text> : '' }
-					{/*
 					<LessonSearchForm
 						onSubmit={this.onSeachSubmitCallback}
 						languageOfTopic={languageOfTopic || null}
 					/>
-					*/}
 					{!this.props.HideClearFilters ?
 						<View>
 								<Text>Clear filters</Text>
