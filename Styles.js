@@ -67,6 +67,13 @@ const Styles = StyleSheet.create({
 	},
 	textWhite: {
 		color: '#fff',
+	},
+	homeBannerContent: {
+		backgroundColor: '#9f74e4',
+	},
+	homeBannerLink: {
+		backgroundColor: '#747de8',
+		borderRadius: '15px',
 	}
 });
 

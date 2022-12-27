@@ -1,8 +1,8 @@
 import React from 'react';
-import { Text, View, TextInput, Image, Button as TextButton, ScrollView } from 'react-native';
+import { View, Platform } from 'react-native';
 import { Video } from 'expo-av';
 import Styles from './Styles.js';
-import { Button, RadioButton, Searchbar, Menu, Headline } from 'react-native-paper';
+import { Button } from 'react-native-paper';
 
 // Stateful button component that disappears after pressed
 class PlayButton extends React.Component {
@@ -50,6 +50,7 @@ const VideoComponent = (props) => {
 	var video = props.video;
 	var apiBaseURL = process.env.APP_SERVER_URL;
 	var ref = React.useRef(null);
+	var isWeb = Platform.OS === 'web';
 
 	return(
 		<View>
@@ -59,21 +60,26 @@ const VideoComponent = (props) => {
 				style={{position: 'relative', height: 225, width: '100%', borderRadius: 25, overflow: 'hidden'}}
 				usePoster={true}
 				posterStyle={{height: '100%', width: '100%', resizeMode: 'cover'}}
-				useNativeControls={true}
+				useNativeControls={isWeb}
+				source={isWeb ? { uri: video.src } : {}}
 			/>
-			<PlayButton callback={() => {
-				if(ref){
-					ref.current.loadAsync({uri: video.src})
-						.then(() => {
-							ref.current.setState({
-								showPoster: false
+			{!isWeb ?
+				<PlayButton callback={() => {
+					if(ref){
+						ref.current.loadAsync({uri: video.src})
+							.then(() => {
+								ref.current.setState({
+									showPoster: false
+								});
+							})
+							.then(() => {
+								ref.current.playAsync();
 							});
-						})
-						.then(() => {
-							ref.current.playAsync();
-						});
-				}
-			}}/>
+					}
+				}}/>
+				:
+				<></>
+			}
 		</View>
 	);
 }

@@ -144,25 +144,25 @@ class VideosIndex extends React.Component {
 						keywords={keywords}
 						navigation={this.props.navigation}
 					/>
-				    <View style={{...Styles.flex, ...Styles.xCenter}}>
-					    <View style={Styles.halfPad}>
+					<View style={{...Styles.flex, ...Styles.xCenter}}>
+						<View style={Styles.halfPad}>
 							<Button icon="refresh" mode="outlined" contentStyle={{flexDirection: 'row-reverse'}} onPress={
 								() => {
 									this.setState({keywords: ''});
 									this.handleChangePage(`${apiBaseURL}/videos.json?page=${this.state.currentPage}`);
 								}
 							}>Refresh</Button>
-					    </View>
-					    <View style={Styles.halfPad}>
-						    <Button icon="cancel" mode="outlined" contentStyle={{flexDirection: 'row-reverse'}} onPress={
+						</View>
+						<View style={Styles.halfPad}>
+							<Button icon="cancel" mode="outlined" contentStyle={{flexDirection: 'row-reverse'}} onPress={
 								() => {
 									this.setState({keywords: ''});
 									this.handleChangePage(`${apiBaseURL}/videos.json`);
 								}
-						    }>Clear filters</Button>
-					    </View>
-				    </View>
-			    </View>
+							}>Clear filters</Button>
+						</View>
+					</View>
+				</View>
 				<View>
 					<View style={Styles.pad}>
 						{this.state.pages.length ?
@@ -214,6 +214,7 @@ class VideosIndex extends React.Component {
 											likes={video.likes}
 											likedByCurrentUser={this.currentUserHasLikedVideo(video)}
 											authenticatedUserID={this.state.userID}
+											navigation={this.props.navigation}
 										/>
 									</View>
 								</View>

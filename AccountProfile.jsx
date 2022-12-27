@@ -4,7 +4,8 @@ import { Video } from 'expo-av';
 import Styles from './Styles.js';
 import { Button, RadioButton, Searchbar, Menu, Headline } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import VideoComponent from './VideoComponent.jsx';
+import VideoPlayer from './VideoPlayer.jsx';
+import TopicLink from './TopicLink.jsx';
 
 class AccountProfile extends React.Component {
 	constructor(props){
@@ -195,8 +196,8 @@ class AccountProfile extends React.Component {
 	}
 
 	async handleLogout(){
-	    await AsyncStorage.removeItem('@user');
-	    await fetch(`${process.env.APP_SERVER_URL}/logout`);
+		await AsyncStorage.removeItem('@user');
+		await fetch(`${process.env.APP_SERVER_URL}/logout`);
 		this.setState({
 			user: false,
 			isCurrentUser: false
@@ -257,25 +258,38 @@ class AccountProfile extends React.Component {
 		this.props.navigation.push('Account Profile', { user });
 	}
 
-	renderMedia(topic){
-		if(topic.FeaturedImage){
-			switch(topic.FeaturedImage.mime){
-				case 'image/jpeg':
-					return (
-						<View style={Styles.fullWidth}>
-							<Image source={{uri: `${process.env.STRAPI_URL}${topic.FeaturedImage.url}`}}
-								style={{height: 225, width: 260, borderRadius: 25}}
-							/>
-						</View>
-					);
-				default:
-					return <Text>Invalid media</Text>
+	afterToggleLike(newVideo, likedByCurrentUser){
+		newVideo.likedByCurrentUser = likedByCurrentUser;
+		let videoAlreadyLiked = false;
+		let updatedUser = this.state.user;
+		updatedUser.likedVideos.forEach((userLikedVideo) => {
+			if(String(newVideo._id) == String(userLikedVideo._id)){
+				videoAlreadyLiked = true;
+				// Restore like to liked video
+				updatedUser.likedVideos[updatedUser.likedVideos.indexOf(userLikedVideo)] = newVideo;
 			}
+		});
+		if(!videoAlreadyLiked && this.state.isCurrentUser){
+			// If user likes their own video, add to liked videos
+			updatedUser.likedVideos.push(newVideo);
 		}
+		// Update uploaded video likes if restoring like from one in liked videos
+		updatedUser.uploadedVideos.forEach((userUploadedVideo) => {
+			if(String(newVideo._id) == String(userUploadedVideo._id)){
+				// Restore like to liked video
+				updatedUser.uploadedVideos[updatedUser.uploadedVideos.indexOf(userUploadedVideo)] = newVideo;
+			}
+		});
+		this.setState({
+			user: updatedUser
+		});
 	}
 
 	render(){
-
+		const authenticatedUser = this.state.authenticatedUser;
+		const authenticatedUserIsAdmin = authenticatedUser ? authenticatedUser.isAdmin : false;
+		const authenticatedUserIsVerified = authenticatedUser ? authenticatedUser.verified : false;
+		const products = this.state.user.products || [];
 		var apiBaseURL = process.env.APP_SERVER_URL;
 
 		return (
@@ -290,23 +304,43 @@ class AccountProfile extends React.Component {
 										Logout
 									</Button>
 								</View>
+								<View style={Styles.pad}>
+									<Button icon="edit" mode="contained" labelStyle={{color: 'white'}} contentStyle={{flexDirection: 'row-reverse'}} onPress={this.handleEditProfile}>
+										Edit Profile
+									</Button>
+								</View>
+								<View style={Styles.pad}>
+									<Button icon="search" mode="contained" labelStyle={{color: 'white'}} contentStyle={{flexDirection: 'row-reverse'}} onPress={this.handleFindFriends}>
+										Find friends
+									</Button>
+								</View>
 							</View>
 							:
 							<Text style={Styles.heading}>{this.state.user.firstName}</Text>
 						}
+
+						{this.state.user.profilePictureSrc ?
+							<View style={Styles.pad}>
+								<Image source={{uri: `${process.env.APP_SERVER_URL}/${this.state.user.profilePictureSrc}`}}
+									style={{height: 225, width: 260, borderRadius: 25}}
+								/>
+							</View>
+							:
+							<Text></Text>
+						}
+
 						{this.state.user.completedTopics.length ?
 							<View className="topics">
 								<Headline>Completed Topics</Headline>
-					    		<ScrollView horizontal>
+								<ScrollView horizontal>
 									{this.state.user.completedTopics.map((topic) => 
-					    				<View key={topic.id}>
-						    				<View style={Styles.pad}>
-						    					<Button icon="arrow-right" contentStyle={{flexDirection: 'row-reverse'}} onPress={() =>
-													this.props.navigation.navigate('Topic', {levelID: topic.levelID, topicID: topic.id})
-												}>{topic.Topic}</Button>
-						    					{this.renderMedia(topic)}
-					    					</View>
-				    					</View>
+										<View key={topic.id}>
+											<View style={{ ...Styles.pad, width: 400 }}>
+												<View style={{...Styles.flex, ...Styles.column, ...Styles.fullWidth, ...Styles.xCenter}}>
+													<TopicLink topic={topic} levelID={topic.levelID} navigation={this.props.navigation}/>
+												</View>
+											</View>
+										</View>
 									)}
 								</ScrollView>
 							</View>
@@ -318,32 +352,23 @@ class AccountProfile extends React.Component {
 						{this.state.user.uploadedVideos.length ?
 							<View>
 								<Headline>Uploaded Videos</Headline>
-					    		<ScrollView horizontal>
+								<ScrollView horizontal>
 									{this.state.user.uploadedVideos.map((video) => 
-							    		<View key={video._id} style={{width: 300}}>
-								    		<View style={{...Styles.pad}}>
-												<View style={{ maxWidth: 300 }}>
-												</View>
-												{this.state.isCurrentUser ?
-													<Button icon="trash-can" onPress={() => this.handleDeleteVideo(video)}>
-														Remove Video
-													</Button>
-													:
-													<Text></Text>
-												}
-												<VideoComponent video={video}/>
-											</View>
-											<View style={{ ...Styles.flex, ...Styles.xSpaceAround, ...Styles.yCenter }}>
-												<Text>Likes: {video.likes || 0}</Text>
-												{video.likedByCurrentUser ?
-													<Button icon="star" onPress={() => this.removeLike(video, this.state.user.uploadedVideos, 'uploadedVideos')}>
-														Liked
-													</Button>
-													:
-													<Button icon="star-outline" onPress={() => this.sendLike(video, this.state.user.uploadedVideos, 'uploadedVideos')}>
-														Like
-													</Button>
-												}
+										<View key={video._id} style={{width: 300}}>
+											<View style={{...Styles.pad}}>
+											<VideoPlayer
+												_id={video._id}
+												title={video.title}
+												languageOfTopic={video.languageOfTopic}
+												src={`${process.env.APP_SERVER_URL}/${video.src}`}
+												thumbnailSrc={`${process.env.APP_SERVER_URL}/${video.thumbnailSrc}`}
+												uploadedBy={video.uploadedBy}
+												likes={video.likes}
+												likedByCurrentUser={video.likedByCurrentUser}
+												authenticatedUserID={authenticatedUser ? authenticatedUser._id : null}
+												handleDeleteVideo={this.state.isCurrentUser || authenticatedUserIsAdmin ? this.handleDeleteVideo : null}
+												afterToggleLike={this.afterToggleLike}
+											/>
 											</View>
 										</View>
 									)}
@@ -357,37 +382,21 @@ class AccountProfile extends React.Component {
 						{this.state.user.likedVideos.length ?
 							<View>
 								<Headline>Liked Videos</Headline>
-					    		<ScrollView horizontal>
+								<ScrollView horizontal>
 									{this.state.user.likedVideos.map((video) => 
-							    		<View key={video._id} style={{width: 300}}>
-								    		<View style={{...Styles.pad}}>
-												<View style={{ ...Styles.flex, ...Styles.xSpaceBetween }}>
-													<View style={{ maxWidth: 160 }}>
-													</View>
-													{video.uploadedBy._id ?
-														<View>
-															<TextButton title={`By: ${video.uploadedBy.displayName}`} onPress={() => this.handleUserProfileNavigation(video.uploadedBy._id)}/>
-														</View>
-														:
-														<View>
-															<Text>By: {video.uploadedBy.displayName}</Text>
-														</View>
-													}
-												</View>
-												<VideoComponent video={video}/>
-											</View>
-											<View style={{ ...Styles.flex, ...Styles.xSpaceAround, ...Styles.yCenter }}>
-												<Text>Likes: {video.likes || 0}</Text>
-												{video.likedByCurrentUser ?
-													<Button icon="star" onPress={() => this.removeLike(video, this.state.user.likedVideos, 'likedVideos')}>
-														Liked
-													</Button>
-													:
-													<Button icon="star-outline" onPress={() => this.sendLike(video, this.state.user.likedVideos, 'likedVideos')}>
-														Like
-													</Button>
-												}
-											</View>
+										<View key={video._id} style={{width: 300}}>
+											<VideoPlayer
+												_id={video._id}
+												title={video.title}
+												languageOfTopic={video.languageOfTopic}
+												src={`${process.env.APP_SERVER_URL}/${video.src}`}
+												thumbnailSrc={`${process.env.APP_SERVER_URL}/${video.thumbnailSrc}`}
+												uploadedBy={video.uploadedBy}
+												likes={video.likes}
+												likedByCurrentUser={video.likedByCurrentUser}
+												authenticatedUserID={authenticatedUser ? authenticatedUser._id : null}
+												afterToggleLike={this.afterToggleLike}
+											/>
 										</View>
 									)}
 								</ScrollView>

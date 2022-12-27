@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Text, View, TextInput, Button as TextButton, Image, ScrollView } from 'react-native';
 import Styles from './Styles.js';
 import { Button, RadioButton, Searchbar, Menu } from 'react-native-paper';
+import TopicLink from './TopicLink.jsx';
 
 class Level extends React.Component {
 	constructor(){
@@ -60,35 +61,36 @@ class Level extends React.Component {
 	render(){
 		return (
 			<ScrollView>
-			    {this.state.topics ?
-			    	this.state.topics.map((topic) => 
-			    		<View key={topic.id} style={{...Styles.flex, ...Styles.column, ...Styles.fullWidth, ...Styles.xCenter}}>			    		
-	    					<Button icon="arrow-right" mode="outlined" contentStyle={{flexDirection: 'row-reverse'}} onPress={() =>
-								this.props.navigation.navigate('Topic', {levelID: this.state.levelID, topicID: topic.id})
-							}>{topic.attributes.Topic}</Button>
-							{this.renderMedia(topic)}
-				    		{topic.attributes.challenges.data ?
-								<ScrollView horizontal>
-						    		<View style={{...Styles.pad, width: 400}}>
-					    				<Text style={{...Styles.subHeading, textAlign: 'center'}}>Need a quick refresher? Slide forward to preview challenges.</Text>
-				    				</View>
-					    			{this.randomChallenges(topic).map((challenge) =>
-					    				<View key={`${topic.id}_${challenge.id}`} style={{...Styles.flex, ...Styles.column, ...Styles.fullWidth, ...Styles.xCenter}}>
-						    				<View style={Styles.pad}>
-							    				<Text style={Styles.heading}>{challenge.attributes.Title}</Text>
-						    					<Text>{challenge.attributes.Content}</Text>
-					    					</View>
-				    					</View>
-				    				)}
-								</ScrollView>
-			    				:
-			    				<Text>No challenges</Text>
-				    		}
-			    		</View>
-		    		) 
-			    	:
-			    	<Text>No topics</Text>
-			    }
+				{this.state.topics ?
+					this.state.topics.map((topic) => 
+						<View key={topic.id}>
+							<View style={{ ...Styles.pad, width: 400 }}>
+								<View style={{...Styles.flex, ...Styles.column, ...Styles.fullWidth, ...Styles.xCenter}}>
+									<TopicLink topic={topic} levelID={topic.levelID} navigation={this.props.navigation}/>
+									{topic.attributes.challenges.data ?
+										<ScrollView horizontal>
+											<View style={{...Styles.pad, width: 400}}>
+												<Text style={{...Styles.subHeading, textAlign: 'center'}}>Need a quick refresher? Slide forward to preview challenges.</Text>
+											</View>
+											{this.randomChallenges(topic).map((challenge) =>
+												<View key={`${topic.id}_${challenge.id}`} style={{...Styles.flex, ...Styles.column, ...Styles.fullWidth, ...Styles.xCenter}}>
+													<View style={Styles.pad}>
+														<Text style={Styles.heading}>{challenge.attributes.Title}</Text>
+														<Text>{challenge.attributes.Content}</Text>
+													</View>
+												</View>
+											)}
+										</ScrollView>
+										:
+										<Text>No challenges</Text>
+									}
+								</View>
+							</View>
+						</View>
+					) 
+					:
+					<Text>No topics</Text>
+				}
 			</ScrollView>
 		);
 	}
