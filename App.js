@@ -1,7 +1,7 @@
 import React from 'react';
 import 'react-native-gesture-handler';
 import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
-import Navigation from './Navigation.jsx';
+import Navigation from './components/Navigation.jsx';
 
 const theme = {
   ...DefaultTheme,
